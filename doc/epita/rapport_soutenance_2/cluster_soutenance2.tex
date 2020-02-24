@@ -1,0 +1,189 @@
+\chapter{Cluster}
+
+\section{Pr\'esentation g\'en\'erale et d\'efinition du cluster}
+
+Un cluster est un groupe de serveurs ind\'ependants fonctionnant comme un seul
+et m\^eme syst\`eme.
+
+Un client dialogue avec un cluster comme s'il s'agissait
+d'une machine unique. Ce syst\^eme permet donc d'augmenter consid\'erablement
+les performances lors du traitement d\'esir\'e. \\
+
+\section{Rappel du fonctionnement g\'en\'eral}
+
+Le cluster est divis\'e en deux parties :
+
+Un client, lanc\'e sur la machine sur laquelle on veut utiliser patchwork13, et
+ un nombre ind\'efini de serveurs qui sont l\`a pour faire les t\^aches de 
+traitement demand\'ees par le client. \\
+
+La communication entre le client et les servers s'effectue en deux temps :
+
+\begin{itemize}
+\item une identification en UDP (broadcast)
+\item Connection et dialogue entre client et server en TCP 
+\end{itemize}
+
+\newpage
+
+\section{Ce qui a \'et\'e fait}
+
+\subsection{D\'efinition des types utilis\'es}
+Pour avoir un cluster simple mais complet, nous avons d\'efinis diff\'erents
+types qui sont en fait des structs :\\
+
+
+\begin{itemize}
+\item
+   Le type server contient un descripteur de la socket qui est en \'ecoute
+permannente de nouvelle connection TCP, ainsi qu'une liste de structures 
+client.\\
+
+\item
+   Le type client (client du server) contient un descripteur de socket sur 
+laquelle le client (l\`a o\`u est lanc\'e patchwork13, o\`u l'output d'un 
+patch) est connect\'e, un pointeur sur le patchwork qui tourne sur le server, 
+un pointeur sur le thread correspondant aux communications avec le client 
+connect\'e., une liste d'outputs (outputs reseau), une liste d'inputs (inputs
+reseau) et un pointeur sur le server auquel il appartient.\\
+
+\item
+  Le type input r\'eseau contient un pointeur sur input, un descripteur de 
+socket pour savoir avec qui cette input est connect\'ee,un pointeur sur le 
+thread utilis\'e par cette output et un pointeur sur le client correspondant.\\
+
+\item 
+   Le type output r\'eseau contient un pointeur sur output, un descripteur de 
+socket pour savoir avec qui cette output est connect\'ee,un pointeur sur le 
+thread utilis\'e par cette output et un pointeur sur le client correspondant.\\
+\end{itemize}
+  
+
+\subsection{Fonctions "communes"}
+Le client et le server ont besoin de quelques fonctions en plus que celle qui 
+ont d\'ej\`a  \'et\'e cr\'ees pour la premiere soutenance :\\
+
+\begin{itemize}
+\item
+   Fonction waitsock\_data : cette fonction bloquante attends que que le buffer 
+soit rempli avec un certain nombre d'octets gr\^ace \`a  la fonction syst\^eme 
+ioctl. Cette fonction est utilis\'ee dans la majorit\'ee des fonctions que nous 
+avons pr\'esent\'e pr\'ec\'edemment.\\
+
+\item
+   Fonction string\_send : \'etant donn\'e qu'on ne peux pas envoyer 
+directement des cha\^ines par le reseau, on a d\^u cr\'eer cette fonction.
+ Cette fonction prend un char* et un descripteur de socket en param\`etres,
+ envoie un 
+premier entier qui repr\'esente la longueur de la cha\^ine, puis la cha\^ine 
+elle m\^eme.\\
+
+\item
+   Fonction string\_reception : \'etant donn\'e qu'on ne peux pas recevoir 
+directement des chaines par le reseau, il a fallu impl\'ementer une fonction 
+r\'ealisant cela. Cette fonction prend un descripteur de socket en 
+param\`etre, attend un premier entier qui repr\'esente la longueur de la 
+chai\^ine, puis apelle la fonction waitsock\_data en lui passant la
+ longueur de 
+la chaine en param\`etre. Une fois la chaine charg\'ee dans le buffer, on 
+apelle la fonction recv pour recevoir notre cha\^ine
+ que l'on retourne ensuite.\\
+\end{itemize}
+
+\newpage
+
+\subsection{Traitement des messages r\'eseau}
+
+Le client est le "ma\^itre" du cluster et, a donc besoin de pouvoir ordonner 
+aux server d'effectuer les actions que le client aura command\'e dans 
+patchwork13. Pour se faire, le server poss\`ede un switch pour traiter les 
+messages qu'il re\c{c}oit. \\
+\\
+On a du cr\'e\'er une fonction waitsock\_data qui est une fonction bloquante
+qui attend que le buffer soit rempli d'un certain nombre d'octets. Dans le
+{\tt switch} cete fonction est utilis\'ee pour recup\'erer un premier entier,
+correspondant a l'identifiant du message qui va suivre.
+En fonction du {\tt case} dans lequel
+l'entier entre, il demande \`a une des fonction de s'\'ex\'ecuter. 
+Les fonctions qui ont \'et\'e realis\'ee sont :\\
+
+\begin{itemize}
+\item 
+  create\_patch\_client\_of\_server, qui demande
+  \`a un server de creer un patch
+  en lui envoyant la classe du patch ainsi que son nom dans la classe. Une fois
+  fait, le server renvoie au client l'adresse du patch qu'il a cr\'e\'e, ceci 
+  afin que la liste des patchs par server, maintenue par le client, soit \'a 
+  jour.\\
+  
+\item
+  destroy\_patch\_client\_of\_server, qui detruit un certain patch et efface 
+  toutes les input/output connect\'es correspondants \`a ce patch dans les 
+  listes d'outputs/inputs du client du server correspondant.\\
+  
+\item
+  int connect\_patch\_local\_client\_of\_server, qui connecte localement une 
+  output et une input appartenant \`a des patchs locaux.\\
+  
+\item
+  connect\_patch\_distant\_client\_of\_server, qui demande \`a un server de 
+  connecter une des output d'un de ses patch \`a une input d'un patch
+  lanc\'e sur un autre server.
+  Pour se faire, une connection TCP est etablie entre les deux
+  server avec un thread de chaque c\^ot\'e pour g\'erer
+  les communications entre ces inputs/outputs.
+  \`A travers cette connection, le premier client envoie au
+  second une demande de bind\_patch\_input\_client\_of\_server ce qui
+  a pour effet de tenir a jour les listes d'input pour le second server.
+  Ensuite, le premier
+  client met \`a jour sa liste d'outputs.\\
+
+\item
+   ask\_patch\_start\_client\_of\_server, sert \`a demarrer
+   un patch \`a un certain
+   temps donn\'e.\\
+
+\item 
+   ask\_patch\_stop\_client\_of\_server, sert \`a stopper
+   l'\'ex\'ecution d'un 
+   patch.\\
+\end{itemize}
+
+
+\subsection{Messages du Client}
+
+
+Au niveau du Client(le pc principal sur le reseau celui
+o\^u est l'utilisateur) il faut envoyer les messages
+permettant de r\'ealiser les actions.
+Pour discuter avec les Serveurs, le Client utilise
+des messages pr\'ed\'efinis que l'on
+envoit au different
+protagoniste en jeux. Pour cela on utilise les messages
+pr\'ef\'edinis dit pr\'ec\'edement
+dans la r\'eception de message donc : <<cr\'e\'e patch>>,
+<<d\'etruire patch>>, \ldots
+A partir de \c{c}a, chaque fonction a son message
+et on prend en param\^etre ce que
+le message \`a besoin. Puis on envoit le tout,
+il y a 2 fonctions aidant \`a cela, une
+envoyant un entier l'autre des chaines de charact\`eres,
+et puis des ``send'' normal
+pour les structures classiques.\\
+
+
+\section{Ce qu'il reste \`a faire}
+Nous avons quasiement fini le cluster et sommes donc en avances sur les 
+pr\'evisions. Cependant il reste une fonction majeure a coder : 
+{\tt ask\_pump\_patch}, qui aura pour r\^ole de faire la
+remont\'ee recursive aux
+p\`eres de la demande de pump. Pump sur un patch a pour effet de le faire 
+calculer ce dernier en pompant ses inputs. \\
+
+A cette soutenance, niveau cluster, il est possible de lancer diff\'erents 
+patchs sur diff\'erents servers et d'actionner ses patchs. Par exemple, il est 
+possible de lancer un patch son sur un ordinateur, un patch opengl sur un autre
+et de faire fonctionner les deux patchs en m\^eme temps.\\
+
+Cette fonction  nous permettra donc de clore le cluster et de permettre un 
+fonctionnement total entre les patchs repartis sur differents server.\\

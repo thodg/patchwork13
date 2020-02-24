@@ -1,0 +1,23 @@
+#!/bin/sh
+
+LIBS=$(grep -E '^PW13_LIBS' Makefile.am | awk -F '=' '{print $2}')
+
+SRCDIR=${PWD}
+PW13_MAKEFILE_AM=${PWD}/../pw13-makefile-am
+if ! test -x ${PW13_MAKEFILE_AM}; then
+    PW13_MAKEFILE_AM=pw13-makefile-am
+    if ! test -x ${PW13_MAKEFILE_AM}; then
+	echo "$0: pw13-makefile-am not found" 1>&2
+	exit 2
+    fi
+fi
+
+for L in ${LIBS}; do
+    if [ "$1" = "-f" ] || [ "$2" = "-f" ]; then
+	rm -f ${SRCDIR}/$L/Makefile.am ${SRCDIR}/$L/Makefile.in
+    fi
+    echo -n "Updating $L: "
+    cd ${SRCDIR}/$L && ${PW13_MAKEFILE_AM} gtk .. $L
+done
+
+exit 0

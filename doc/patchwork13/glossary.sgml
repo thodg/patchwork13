@@ -1,0 +1,15 @@
+  <glossary>
+    <title>Glossary</title>
+    <glossentry><glossterm>Patch</glossterm>
+      <glossdef>
+	<para>A patch is like a function.
+	      It is named after the patches in the first
+	      modular sound synthetizers.</para>
+      </glossdef>
+    </glossentry>
+    <glossentry><glossterm>Patchwork</glossterm>
+      <glossdef>
+	<para>A patchwork is a directed graph of patches.</para>
+      </glossdef>
+    </glossentry>
+   </glossary>

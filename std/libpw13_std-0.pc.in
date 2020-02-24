@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: pw13_std-0
+Description: The Patchwork13! standard patch library.
+Requires: pw13-0
+Version: @VERSION@
+Libs: -L${libdir} -lpw13_std-0
+Cflags: -I${includedir}/libpw13-0 -I${libdir}/libpw13-0/include

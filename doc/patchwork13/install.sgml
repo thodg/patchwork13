@@ -1,0 +1,48 @@
+<chapter id="install">
+  <title>Installing Patchwork13!</title>
+  <sect1 id="install-on-unix">
+    <title>Install Patchwork13! on UNIX</title>
+    <procedure>
+      <step><para>Downloading</para>
+    	<para>You can download the latest release from
+    	  <ulink url="http://patchwork13.sourceforge.net/"></ulink>.
+    	  For UNIX get the full sources tarball.
+    	</para>
+      </step>
+      <step>
+    	<para>Extract the tarball with tar</para>
+    	<screen><command>tar xzvf patchwork13-0.1.0.tar.gz</command></screen>
+      </step>
+      <step>
+        <para>Go to the pw13_gtk directory and follow the usual UNIX package procedure :</para>
+        <screen><command>./configure</command>
+                <command>make</command>
+                <command>sudo make install</command></screen>
+      </step>
+    </procedure>
+  </sect1>
+  <sect1 id="install-on-win32">
+    <title>Install Patchwork13! on Windows</title>
+    <procedure>
+      <step><para>Downloading</para>
+    	<para>You can download the latest release from
+    	  <ulink url="http://patchwork13.sourceforge.net/"></ulink>.
+    	  For UNIX get the Win32 binary installer.
+    	</para>
+      </step>
+      <step>
+    	<para>Launch the installer by double-clicking its icon,
+	  and then follow the instructions in the installer window.</para>
+      </step>
+      <step><para>Accept the license by clicking "I accept"</para></step>
+      <step><para>Follow the instructions in the next pages
+        of the installer.</para></step>
+      <step>
+        <para></para>
+        <screen><command>./configure</command>
+                <command>make</command>
+                <command>make install</command></screen>
+      </step>
+    </procedure>
+  </sect1>
+</chapter>

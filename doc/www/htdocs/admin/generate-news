@@ -1,0 +1,4 @@
+#! /bin/sh
+id
+pwd
+php -f pages/generatenews.inc.php > ../news/01.html

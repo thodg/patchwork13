@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+
+DEB_BUILDDIR = $(CURDIR)/debian/build
+DEB_DESTDIR = $(CURDIR)/debian/patchwork13-0
+
+install/patchwork13-0::
+	cd debian/patchwork13-0 && \
+	 find usr/lib -maxdepth 1 \
+	      \( -name '*.so' -or -name '*.a' -or -name '*.la' \) \
+	      -print0 > ../dev-files && \
+	 cpio -0 -p --make-directories ../patchwork13-dev/ < ../dev-files && \
+	 xargs -0 rm < ../dev-files
+	cd debian && \
+	 mv patchwork13-0/usr/lib/pkgconfig patchwork13-dev/usr/lib/ && \
+	 mv patchwork13-0/usr/include       patchwork13-dev/usr/include

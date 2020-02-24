@@ -1,0 +1,58 @@
+\newpage
+\section{Patch SDL\_Audio}
+
+\subsection{Pr\'esentation g\'en\'erale}
+\par
+L'utilisation d'entr\'ees/sorties sonores est necessaire dans la conception de 
+patchs. Pour ce faire, nous avons d\'ecid\'e d'utiliser la librairie audio de SDL. 
+\\
+\par
+En effet, elle offre de grandes possibilit\'ees dans le traitement de son et donc 
+dans la cr\'eations de patchs. On peut d\'es \`a pr\'esent, initialiser un son 
+et le jouer. 
+\\
+On peut completement contr\^oler le flux de donn\'ees lu dans un sample. 
+On a m\^eme la possibilit\'ee de creer les samples, mixer deux samples, controler 
+la stereo\ldots Ce qui nous permetra par la suite de cr\'eer des patchworkds de 
+cr\'eation sonore gr\^ace \`a de multiples patchs Audio.
+\\
+\par
+SDL premetant aussi l'utilisation d'opengl, son utilisation nous permet d\^etre 
+compl\`etement compatible.
+
+\subsection{Fonctionnement et D\'emarrage}
+L'apprentissage de l'utilisation de SDL\_Audio passe beaucoup par la documentation. 
+En effet, les tutoriels et autres aides sont assez sommaires et ne nous apprend pas a 
+g\'erer les buffers et \`a manipuler les types de donn\'ees specifique a SDL. Afin 
+d'arriver \`a notre resultat, nous avons \'et\'e \`a tatons et a dissection de documetations.
+
+\newpage
+\subsection{sound\_out}
+\par
+Comme tous les patches, on peut voir appara\^itre ce patch dans l'interface graphique de GTK.
+\\
+L'initialisation et le lancement d'un son est compose de plusieurs \'etapes :
+\subsubsection{L'initialisation}
+\par
+Elle contient les initialisations classiques des patchs et a en plus une 
+initialisation de SDL\_Audio. Elle se fait par l'ajout d'un param\^etre SDL 
+et d'une structure capable de gerer a la main les buffers. Ces deux sont 
+initialis\'e et pr\^ets \`a accueillir des donn\'ees afin de les traiter et de 
+les jouer.
+\subsubsection{Pump et traitement des donn'ees}
+\par
+Tout commencera lors du premier pump. Entre ce premier pump et tant que 
+le premier buffer n'est pas rempli, on ajoute les entree \`a ce buffer. 
+Une fois qu'il est charg\'e, on lance la lecture de ce buffer et on alterne 
+entre les deux buffers. Les donnees arrivant en entr\'ee sont alors trait\'ees 
+et envoy\'ees dans le buffer non lu. La sortie du patch est reli\'ee au temps du 
+ptchwork et fait avancer le temps.
+\subsubsection{Stop}
+\par
+On arr\^ete la lecture, SDL\_Audio et on lib\`ere le paramertre SDL et les buffers;
+
+\subsection{Ce qui est prevu}
+\par
+Gr\^ace \`a la cr\'eation de ce patch de sortie audio, il ne nous reste plus qu'a 
+cr\'eer des patches capables de ajouter et de modifier des effets sur la sortie 
+sonore ou tout simplement sur les samples d'entr\'ee. 

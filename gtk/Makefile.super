@@ -1,0 +1,13 @@
+
+default: .super
+
+configure: svn-install configure.in Makefile.am src/Makefile.am
+	./svn-install
+
+Makefile: configure ../configure-options
+	./configure `cat ../configure-options`
+
+.super: Makefile $(wildcard src/*.c) $(wildcard src/*.h)
+	${MAKE}
+	`which sudo` ${MAKE} install
+	echo 'ok' > $@

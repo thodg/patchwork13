@@ -1,0 +1,88 @@
+\chapter{Cluster}
+
+\section{Descriptif du protocole r\'eseau}
+Tout d'abord il faut au minimum un client et un serveur (normal ...).
+Une fois lanc\'es, le client envoye un paquet permettant aux serveurs de se 
+faire conna\^itre, et ceci via un envoi de messages sur l'addresse de broadcast.
+Ensuite, le client initialise une connection TCP avec le(s) serveur(s) 
+identifi\'e(s).
+Par la suite, le server peut envoyer des requ\^etes d'\'ex\'ecution de 
+commandes via l'envoi d'un int correspondant \`a une fonction, qui, lorsqu'il
+est re\c{c} par le server, entre dans un case pour identifier et lancer la 
+fonction d\'esir\'ee.
+
+
+\section{Fonctions disponibles \`a travers le cluster}
+\begin{itemize}
+\item Une fonction de creation de patch
+\item Une fonction detruisant un patch
+\item Une fonction qui demande \`a un server de demarr\'e un patch pr\'ecis
+qu'il h\'eberge.
+\item Une fonction permettant l'arr\^et d'un patch
+\item Une fonction connectant localement deux patchs 
+\item Une fonction permettant de connecter des patchs se trouvant sur des 
+machines diff\'erentes
+\item Une fonction qui demande de pomper \`a tous les pr\'ed\'ecesseurs du 
+patchs vis\'e.
+\item Une fonction permettant l'envoi de buffers
+\item Une nouvelle fonction send
+\end{itemize}
+
+\newpage
+\section{Descriptif des fonctions et des m\'ecanismes du cluster}
+
+\begin{itemize}
+
+\item Lors de la demande de cr\'eation de patch par le client, ce dernier 
+envoie au server l'entier lui permettant de savoir qu'on lui demande cette 
+t\^ache, ainsi que le chemin du patch, et pour finir son nom. Avec cel\`a, le 
+server utilise une fonction du noyau pour cr\'eer le patch demand\'e. Par
+a suite, le server renvoye au client un pointeur sur le patch qu'il vient de 
+cr\'eer pour d\'etenir une liste des patchs lanc\'es sur chaque server.
+\newline
+\item Pour detruire un patch, le client envoye l'ID du message correspondant 
+au server, ainsi que le pointeur sur le patch voulu. La suppression devient 
+effective gr\^ace \`a un appel sur une fonction du noyau.
+\newline
+\item Pour demander \`a un client de d\'emarrer un patch, il suffit de 
+pr\'eciser, en plus de l'ID du message, le temps auquel il faut lancer le 
+patch.
+\newline
+\item Arr\^eter un patch n\'ecessite simplement d'envoyer un pointeur sur le 
+patch concern\'e au client, qui sera arr\^t\'e gr\^ace \`a un appel sur une 
+fonction du noyau.
+\newline
+\item Le transfert de buffer qui a \'et\'e ecrit permet l'envoi de n'importe
+quel type de donn\'ee ('a). Le principe est d'utiliser des unions, 
+repr\'esentant chacune un bloc du buffer. Notre buffer est donc un 
+encha\^inement d'unions dans la m\'emoire. Pour conn\^itre la taille \'a 
+recevoir, le premier block contient la taille totale du buffer. 
+\newline
+\item La fonction permettant de connecter deux servers entre eux est plus compliqu\'e qu'un simple appel des fonctions du noyau. Il a fallu se tourner les meninges serieusement pour la pondre. Elle doit permettre de rendre transparent la connection de deux patchs entre deux serveurs. Le serveur 1 par la demande du client va etablir une connection sur le serveur 2 classiquement en tcp puis lui envoyer les donn\'ees n\'ecessaires soit le nom de l'output et le pointeur du patch. Ensuite il faut cr\'er un patch permettant le transit des donn\'ees entre les deux patchs puis le connecter au patch du serveur 1 c\^ot\'e input du patch. Ce patch a donc une sortie qui renvoit n'importe quelle donn\'ee et qui permet de tout transiter avec les fonctions d'envoi et de r\'eception de grosse donn\'ees. Pour le pump tout va se faire en transparent, lorsque le patch pr\'ec\'edent demandera un pump du fameux patch alors il demandera de pumper avec un message r\'eseau au patch du serveur 2 puis se mettra en attente des donn\'ees qui arriveront sur la sortie du path du serveur 2 et qui ressortiront directement sur l'output du patch de transmission.
+
+  \newpage
+
+\item La connection localement de deux patchs fonctionnent en prenant un pointeur et une cha\^ine par sortie et entr\'ee \`a connecter, cela permet de trouver le pointeur sur l'entr\'ee et la sortie n\'ecessaire \`a la fonction du noyau permettant de les relier. 
+  \newline
+\item \'Etant donn\'e que la fonction send d'UNIX ne garantit pas que toutes les
+ donn\'ees ont \'et\'e emvoy\'ees (embetant si on a des pertes lors d'envoi de 
+gros buffers), nous avons d\^u nous appuyer sur cette fonction pour en cr\'eer 
+une nouvelle permettant de tout envoyer.
+
+\end{itemize}
+
+
+
+\section{Ce qu'il est possible de faire gr\^ace au cluster}
+Au moment o\`u nous r\'edigeons ces lignes, nous sommes capables de faire 
+fonctionner plusieurs patchs sur diff\'erents server, le tout contr\^ol\'e 
+par le client.
+Par exemple (ce qui vous \`a \'et\'e pr\'esent\'e \`a cette soutenance),
+on peut faire jouer un son sur tous les ordinateurs d'epita en m\^eme temps, 
+ou encore de mixer du son et que chaque server du cluster h\'eberge un patch, 
+ou plusieurs patchs appartenant au patchwork du client. 
+
+\section{Ce qu'il reste \`a faire}
+Le cluster est \`a ce jour op\'erationnel pour tout ce dont nous avons besoin, 
+mais nous pourrons par la suite impl\'ementer des fonctions suppl\'ementaires, 
+comme par exemple, g\'erer plusieurs patchworcks par clients etc...

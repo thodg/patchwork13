@@ -1,0 +1,125 @@
+\chapter{Patchs et traitement du son}
+
+\section{Traitement du son }
+
+\subsection{sound\_out}
+\par
+Afin de reussir \`a sortir un son gr\^ace \`a Patchwork13, nous utilisons le patch
+\textit{sound\_out}. Une technique unique au monde cr\'e\'ee afin de pouvoir jouer
+n'importe quel son \`a partir de son signal.
+\\
+\par
+Le patch est compos\'e de plusieurs parties. Chacune de ces parties est essentielle
+\`a la gestion de la sortie audio et nous a pos\'e quelques probl\`emes afin d'avoir
+un son propre.
+\\
+\subsubsection{La fonction de \textbf{pump}.}
+  \par
+  Comme decrit pr\'ec\'edemment, le patch prend en param\^etre un short. Plus pr\'ecis\'ement pour jouer un son audible et
+  respectable, il nous faut un nombre de samples (shorts) minimum par seconde. Ici, on
+  initialise cette frequence a 44100, il nous faudra donc au moins 44100 short/s. Le concept
+  du patchwork nous permet de g\'erer le son ainsi.
+  \\
+  \\
+  Dans cette fonction, on ajoutera chaque sample re\c{c}u dans un buffer qui sera lu d\`es que l'on
+  aura assez de samples pour avoir du son. La gestion des buffers est similaire \`a une file
+  \`a laquelle on a reli\'e la t\^ete avec la queue. La technique de 2 buffers alterne a \'et\'e
+  abandonn\'ee pour des questions d'optinmisation.
+  \\
+  \\
+  Une fois, le premier buffer rempli, on demarre la lecture dessus et on continue de
+  remplir les autres afin de ne pas avoir de sauts dans la sortie audio.
+  \\
+  \\
+  La difficult\'e ici a \'et\'e de trouver un systeme pour g\'erer les buffers. La solution utilis\'ee
+  fonctionne. et nous permet de traiter tous types de donn\'ees.
+  \\
+\subsubsection{La fonction de \textbf{callback}.}
+  \par
+  Cette fonction est propre a la bibliotheque SDL, et plus pr\'ecisement SDL\_Audio. Elle est
+  utilis\'ee dans la lecture du son et sert \`a remplir le buffer audio avec les donn\'ees a lire.
+  Chaque buffer (tableau de samples) lut y est pass\'e en param\^etre et doit etre rempli pour
+  la lecture. Afin de le remplir, on utilisera les buffers rempli pendant la phase de pump.
+  \\
+  \\
+  Notre probleme ici a \'et\'e de comprendre le concept de la fonction et adapter notre format de
+  donn\'ees \`a celui demand\'e par SDL. Encore une fois, le probleme est resolu et la lecture du
+  son est naturellement jolie.
+  \\
+\subsubsection{Les fonctions \textbf{init}, \textbf{start}, \textbf{stop}, \textbf{destroy}.}
+  \par
+  Dans ces fonctions, on pr\'epare les buffers \`a recevoir des donn\'ees, on charge le patch et
+  on le detruit en liberant la memoire.
+
+\subsection{wav\_out}
+\par
+Ce patch de son, dependant de la SDL\_Audio, est utilis\'e afin de charger un fichier wav dans
+le but de le jouer via le patch \textit{sound\_out}.
+\subsubsection{Les fonction \textbf{init} et \textbf{start}.}
+\par
+Ces fonctions sont appel\'ees pour charger le fichier en m\'emoire et mettre les informations de
+positions, dur\'ee... \`a zero. On prepare le patch \`a decomposer et \`a envoyer les samples du
+fichier un par un. Les informations sur le sample y sont recuper\'ees afin de pouvoir re-sampler,
+c'est \'a dire mettre au bon format audio, si n\'ecessaire.
+\subsubsection{La fonction de \textbf{pump}.}
+\par
+Pourquoi envoyer les samples un par un ? Tout simplement pour pouvoir traiter le signal du
+wav comme le r\'esultat d'une fonction en fonction du temps. le re-sampling du son se fait
+automatiquement gr\^ace \'a la gestion du patchwork dans le temps. gr\^ace \`a des techniques
+similaires, on peut lire un wav et cr\'eer du son en m\^eme temps.
+\\
+\\
+\par
+Les probl\`emes pos\'es par ce patch ont \'et\'e le sampling, r\'esolu, et la gestion du volume de
+sortie du wav. Ce dernier a \'et\'e r\'esolu par l'ajout d'une entr\'ee floatante permetant de
+faire varier l'amplitude.
+
+\newpage
+\section{Patchs de son}
+Afin de pouvoir commencer \'a obtenir un rendu int\'eressant, nous avons cod\'es
+plusieurs patchs de traitement du son.
+\\
+\\
+Premi\`erement, un patch de saturation qui a pour fonction de limiter un son
+en amplitude. Ce patch prends donc deux flotants en entr\'ee, reprensentant la
+valeur de saturation maximale, ainsi que la valeur de saturation minimale. Cet
+effet de saturation est tr\'es rependu et utilis\'e dans de nombreux styles
+musicaux.
+\\
+\\
+Ensuite, un patch de delay qui joue un pourcentage du son
+courant ainsi que le son qui a \'et\'e jou\'e il y a un temps pass\'e en input.
+\'Evidemment, on peut changer le pourcentage en live, ainsi que le delay. Tout
+comme la saturation, le delay est enorm\'ement utilis\'e lors de compositions
+musicales.
+D'un point de vue algorithmique, on cr\'ee un buffer d'une taille \'egale au
+nombre de samples de delay que l'on remplit avec l'entr\'ee. On effectue en
+sortie une multiplication de l'input par le feedback (un pourcentage).
+Une fois qu'on a recu un nombre de samples \'egal au delay, on renvoye comme
+valeur le sample courant multipli\'e par le feedback plus le sample qui a
+\'et\'e jou\'e au temps t (t \'etant valant le temps courant moins la valeur
+de de delay).
+\\
+\\
+Par la suite, nous avons \'elabor\'es un patch de sratch (comme sur des
+platines de DJ et dans la plupart des logiciels de son). Ce patch est compos\'e
+d'une barre de scroll agissant sur le son jou\'e, comme la main d'un DJ sur
+son vynil. D'un point de vue pratique, plus on deplace le scroll dans un sans
+ou dans l'autre, plus le temps recule ou avance.
+Pour finir nous avons cr\'ee un mixer, nous permettant de mixer plusieurs
+pistes audios \'a la fois avec un fader associ\'e pour plus de pr\'ecision.
+Pour \^etre plus clair, toutes les \'entr\'es voient leurs valeurs
+multipli\'ees par le coefficient du fader toutes somm\'es pour finir.
+\\
+\\
+Nous avons aussi cr\'ee un patch permettant d'appliquer une fonction replay,
+qui remet son pr\'edecesseur au temps de r\'ef\'erence. Nous utilisons pour
+l'instant ce patch reli\'e \`a des patchs son mais il est \`a noter que c'est
+notre premier patch polymorphique (c'est \`a dire que le type des entr\'ees et
+des sorties est 'a (comme en Caml !). La demande de replay se fait en
+utilisant la gestion des signaux GTK.
+\\
+\\
+Il nous reste \`a faire une multitude de patchs sons pour la prochaine 
+soutenance afin d'avoir des possibilit\'es sonores \'etendues et pr\'esenter 
+un rendu tr\`es apr\'eciable pour la soutenance finale.

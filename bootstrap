@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+display_and_run() {
+    echo "$*"
+    eval "$*" || exit 1
+}
+
+for D in std gtk stk snd sdl; do
+    echo "--  Updating libs in $D"
+    DD=$PWD
+    cd $D
+    ./update-libs -f
+    cd $DD
+done
+
+libtoolize --copy --force
+display_and_run aclocal
+display_and_run autoconf
+display_and_run automake --add-missing --copy --force

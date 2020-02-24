@@ -1,0 +1,264 @@
+##  Patchwork13! The generalist modular synthesis toolkit.
+##  Copyright (C) 2003-2007  Thomas de Grivel <billitch@gmail.com>
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+AC_INIT([Patchwork13!],[0.1],[billitch@sf.net],[patchwork13-0])
+AC_CONFIG_SRCDIR(pw13/patch.c)
+AM_INIT_AUTOMAKE([gnu dist-bzip2])
+
+########
+########  COMMON
+########
+
+####  Options
+
+##  Debugging
+AC_MSG_CHECKING([if we want debugging])
+AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Activate debugging]),
+	      [if test "x$debug" = x; then debug=yes; fi], [debug=yes])
+if test "x$debug" = xyes; then
+  DEBUG_CFLAGS='-O0 -g -DPW13_DEBUG'
+else
+  debug=no
+  DEBUG_CFLAGS='-O3 -DNDEBUG'
+fi
+AC_MSG_RESULT([$debug])
+
+##  Library path
+AC_MSG_CHECKING([the pw13 library path])
+AC_ARG_WITH([pw13-library-path],
+  AC_HELP_STRING([--with-pw13-library-path=PATH],
+                 [path to the pw13 libraries [[default=${libdir}/pw13-0]]]),
+  [ PW13_LIBRARY_PATH="${withval}" ],
+  [ PW13_LIBRARY_PATH="${libdir}/pw13-0" ]
+)
+AC_MSG_RESULT([$PW13_LIBRARY_PATH])
+AC_SUBST(PW13_LIBRARY_PATH)
+
+
+####  Environment
+
+##  win32
+AC_CANONICAL_HOST
+AH_TEMPLATE(WIN32, [Define if we compile for Win32 platform])
+AC_MSG_CHECKING([for native Win32])
+case "$host" in
+  *-*-mingw*)
+    os_win32=yes
+    AC_DEFINE(WIN32)
+    ;;
+  *)
+    os_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$os_win32])
+AM_CONDITIONAL(OS_WIN32, test "$os_win32" = "yes")
+if test "$os_win32" = "yes"; then
+ if test x$enable_static = xyes -o x$enable_static = x; then
+   AC_MSG_WARN([Disabling static library build, must build as DLL on Windows.])
+   enable_static=no
+ fi
+ if test x$enable_shared = xno; then
+   AC_MSG_WARN([Enabling shared library build, must build as DLL on Windows.])
+ fi
+ enable_shared=yes
+fi
+
+####  Toolchain
+
+##  Common
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_INSTALL
+
+##  Libtool
+AC_WITH_LTDL
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+
+####  Output
+
+##  Flags
+CFLAGS="-W -Wall -Werror $DEBUG_CFLAGS"
+CXXFLAGS="$CFLAGS"
+AC_SUBST(CFLAGS)
+AC_SUBST(CXXFLAGS)
+
+##  Files
+AC_CONFIG_HEADER([config.h])
+AC_CONFIG_FILES([
+	Makefile
+])
+
+
+########
+########  PW13
+########
+
+####  Dependencies
+
+##  For pw13
+PKG_CHECK_MODULES(XML2, libxml-2.0)
+AC_SUBST(XML2_CFLAGS)
+AC_SUBST(XML2_LIBS)
+
+##  For others
+PW13_CFLAGS="$XML2_CFLAGS -I\${top_srcdir}"
+PW13_LIBS="$XML2_LIBS \${top_builddir}/pw13/.libs/libpw13-0.la"
+AC_SUBST(PW13_CFLAGS)
+AC_SUBST(PW13_LIBS)
+
+
+####  Output
+AC_CONFIG_FILES([
+	pw13/Makefile
+	pw13/libpw13-0.pc
+])
+
+
+########
+########  PW13_STD
+########
+
+####  Dependencies
+PW13_STD_CFLAGS="-I\$(top_srcdir)"
+AC_SUBST(PW13_STD_CFLAGS)
+
+####  Output
+AC_CONFIG_FILES([
+	std/Makefile
+	std/array/Makefile
+	std/bool/Makefile
+	std/float/Makefile
+	std/int/Makefile
+	std/short/Makefile
+	std/stream/Makefile
+	std/text/Makefile
+	std/time/Makefile
+	std/vect4f/Makefile
+	std/void/Makefile
+])
+
+
+########
+########  GTK
+########
+
+####  Dependencies
+
+##  for gtk
+PKG_CHECK_MODULES(gthread2, gthread-2.0)
+PKG_CHECK_MODULES(gtk2, gtk+-2.0)
+PKG_CHECK_MODULES(libglade2, libglade-2.0)
+PKG_CHECK_MODULES(cairo, cairo)
+PKG_CHECK_MODULES(PW13_GTK,
+	gthread-2.0
+	gtk+-2.0
+	libglade-2.0
+	cairo
+)
+AC_SUBST(PW13_GTK_CFLAGS)
+AC_SUBST(PW13_GTK_LIBS)
+
+####  Output
+
+pw13_datadir=${datadir}/pw13-0
+AC_SUBST(pw13_datadir)
+
+AC_CONFIG_FILES([
+	gtk/Makefile
+	gtk/data/Makefile
+	gtk/src/Makefile
+	gtk/const/Makefile
+	gtk/displays/Makefile
+])
+
+
+########
+########  STK
+########
+
+####  Dependencies
+
+##  for stk
+AC_LANG([C++])
+AC_CHECK_HEADER([stk/RtAudio.h])
+PKG_CHECK_MODULES(stk, alsa jack)
+PW13_STK_CFLAGS="$stk_CFLAGS"
+PW13_STK_LIBS="$stk_LIBS -lstk"
+AC_SUBST(PW13_STK_CFLAGS)
+AC_SUBST(PW13_STK_LIBS)
+
+####  Output
+
+AC_CONFIG_FILES([
+  stk/Makefile
+  stk/rtaudio/Makefile
+])
+
+
+########
+########  SND
+########
+
+####  Dependencies
+
+##  for snd
+PKG_CHECK_MODULES(fftw3, fftw3)
+PW13_SND_CFLAGS="$fftw3_CFLAGS"
+PW13_SND_LIBS="$fftw3_LIBS -lm"
+AC_SUBST(PW13_SND_CFLAGS)
+AC_SUBST(PW13_SND_LIBS)
+
+####  Output
+
+AC_CONFIG_FILES([
+  snd/Makefile
+  snd/env/Makefile
+  snd/freq/Makefile
+  snd/signals/Makefile
+  snd/note/Makefile
+  snd/synth/Makefile
+  snd/fx/Makefile
+])
+
+
+########
+########  SDL
+########
+
+####  Dependencies
+
+##  for sdl
+PKG_CHECK_MODULES(sdl, sdl)
+PW13_SDL_CFLAGS="$sdl_CFLAGS"
+PW13_SDL_LIBS="$sdl_LIBS -lGL -lGLU"
+AC_SUBST(PW13_SDL_CFLAGS)
+AC_SUBST(PW13_SDL_LIBS)
+
+####  Output
+
+AC_CONFIG_FILES([
+  sdl/Makefile
+  sdl/gl/Makefile
+  sdl/mixer/Makefile
+])
+
+########
+########  FINAL OUTPUT
+########
+
+AC_OUTPUT

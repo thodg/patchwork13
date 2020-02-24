@@ -1,0 +1,17 @@
+  <chapter id="installing">
+    <title>Installing Patchwork13!</title>
+    <procedure>
+      <title>Install Patchwork13! on UNIX</title>
+      <step performance="required">
+        <para>Downloading</para>
+	<para>You can download the latest release from
+	  <ulink url="http://patchwork13.sourceforge.net/"></ulink>.
+	  For UNIX get the full sources tarball.
+	</para>
+      </step>
+      <step performance="required">
+	<para>Extract the tarball with tar</para>
+	<screen><command>tar xzvf patchwork13-0.1.0.tar.gz</command></screen>
+      </step>
+    </procedure>
+  </chapter>

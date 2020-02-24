@@ -1,0 +1,42 @@
+<chapter id="pw13-gtk">
+  <title>The graphical user interface : pw13_gtk</title>
+  <sect1 id="pw13-gtk-overview"><title>Overview</title>
+    <para>In this chapter we will explain how to use
+      <command>pw13_gtk</command>, our GTK+ graphical user interface.</para>
+    <para>It is a very user-friendly interface, which can be
+      used even if you cannot type (doh !) because everything
+      can be done with the mouse. It allows one to graphically
+      create a patchwork and edit it. You can also save it,
+      and load a previously created patchwork.</para>
+  </sect1>
+  <sect1><title>The toolbox</title>
+    <para>The main window which is the only one when you load
+      <command>pw13_gtk</command> is the toolbox
+      containing all the patch classes that you can use in a patchwork,
+      and a menu wich contains the following.
+      You can create a new patchwork from the menu
+      <command>File / New</command>.
+    </para>
+  	<para>You can add a patch to a patchwork by dragging
+  	  it from the toolbox tree to the patchwork window.
+  	</para>
+  </sect1>
+  <sect1><title>The patchwork window</title>
+    <para>In the patchwork window you can move a patch by dragging
+      it with the mouse on its name.</para>
+    <para>To connect the output of a patch to the input of an other patch
+      simply do a drag and drop from the output's check box to the
+      input's checkbox. A beautiful line should appear between the output
+      and the input. If the connection was not made it probably is because
+      the output and the input do not have the same type. You can only connect
+      an output to an input if they have the same type. What would happen
+      if you multiply text data with 3D points ?</para>
+    <para>An important thing in Patchwork13! is that YOU must create a patch
+      to make the time move. If you have no patch to make the time move you
+      can use the patch /std/time/augend, which just constantly increase
+      the time between each pump.</para>
+    <para>When you have created patches and connected them together,
+      you are ready to start the patchwork by clicking the play button
+      at the bottom of the window.</para>
+  </sect1>
+</chapter>

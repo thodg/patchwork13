@@ -1,0 +1,59 @@
+Source: patchwork13-0
+Section: libs
+Priority: extra
+Maintainer: Thomas de Grivel <billitch@gmail.com>
+Build-Depends: cdbs, debhelper (>= 5), autotools-dev, cpio, libxml2-dev
+Standards-Version: 3.7.2
+
+
+Package: patchwork13-0
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Generalist modular synthesis toolkit
+ Patchwork13! is the generalist modular synthesis toolkit.
+ It expands the concept of modular synthesis to any kind of
+ data and provide fast, real-time prototyping of any data
+ processing. Writing of modules (called patches) to support
+ new kinds of data or new filters is kept very simple and
+ easy. Its applications are quite countless and only limited
+ by the writing of new patches.
+
+
+Package: patchwork13-dev
+Section: libdevel
+Architecture: any
+Depends: patchwork13-0 (= ${Source-Version})
+Description: Development package for Patchwork13
+ Patchwork13! is the generalist modular synthesis toolkit.
+ It expands the concept of modular synthesis to any kind of
+ data and provide fast, real-time prototyping of any data
+ processing. Writing of modules (called patches) to support
+ new kinds of data or new filters is kept very simple and
+ easy. Its applications are quite countless and only limited
+ by the writing of new patches.
+
+
+Package: patchwork13-dbg
+Section: libdevel
+Depends: patchwork13-0 (= ${Source-Version})
+Architecture: any
+Description: Debug package for Patchwork13
+ Patchwork13! is the generalist modular synthesis toolkit.
+ It expands the concept of modular synthesis to any kind of
+ data and provide fast, real-time prototyping of any data
+ processing. Writing of modules (called patches) to support
+ new kinds of data or new filters is kept very simple and
+ easy. Its applications are quite countless and only limited
+ by the writing of new patches.
+
+
+Package: patchwork13-doc
+Architecture: all
+Description: Documentation for Patchwork13
+ Patchwork13! is the generalist modular synthesis toolkit.
+ It expands the concept of modular synthesis to any kind of
+ data and provide fast, real-time prototyping of any data
+ processing. Writing of modules (called patches) to support
+ new kinds of data or new filters is kept very simple and
+ easy. Its applications are quite countless and only limited
+ by the writing of new patches.

@@ -1,0 +1,58 @@
+\documentclass[14pt,a4paper]{report}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+
+\begin{document}
+
+\pagestyle{empty}
+
+\begin{center}
+\rule{0cm}{19mm} \\
+
+{\Huge \textbf{Rapport de Projet}} \\[23mm]
+
+{\huge 2B2S} \\[8mm]
+
+Thomas 'billich' De Grivel \\
+Maxime 'loucha\_m' Louchart \\
+Bruno 'Broen' Malaquin \\
+Julien 'Splin' Valentin \\[32mm]
+
+\centerline{{\includegraphics{patchwork13.jpg}}}
+
+\end{center}
+
+\newpage
+\setcounter{page}{1}
+
+\tableofcontents
+
+\newpage
+
+\input{introduction.tex}
+\input{noyau.tex}
+\input{gui.tex}
+\input{cluster.tex}
+\input{opengl.tex}
+\input{son.tex}
+\input{realisation.tex}
+
+\chapter{site web}
+http://patchwork13.sourceforge.net
+\\
+\\
+Le site web a ete concu avec les technologies Php, Mysql, 
+Technicolors, et une bonne dose d'HTML.
+\\
+Pour ameliore sa convivialite, une oartie administration 
+a ete cree pour poste des news a la vole.
+
+\input{conclusion.tex}
+
+\newpage
+\begin{center}
+MERCI
+\end{center}
+
+\end{document}

@@ -1,0 +1,122 @@
+\chapter{Interface graphique utilisateur}
+
+
+\section{GTK}
+\subsection{Pr\'esentation}
+La bibliotheque graphique GTK+2 est necessaire au Patchwork13! afin d'avoir une 
+interface graphique digne de ce nom. Grace a cette technologie, il nous est possible
+de charger une fenetre a partir d'un fichier .glade. ce fichier nous est facil a 
+concevoir grace a l'utilisation de glade-2. Grace a GTK, on peut donc charger des 
+fenetres toute faites, mais on peut aussi generer et modifier des fenetres 
+directement dans le code. Cette methode nous aide dans la generation des patches.
+Les avantages de GTK sont grands, et nous avons essay\'e d'exploiter ces ressources 
+au maximum dans l'optique d'optimiser le Patchwork13!.
+
+\subsection{Insertion}
+L'insertion de la bibliotheque GTK dans le patchwork13! n'a pas pos\'e trop de 
+problemes vis-a-vis du Patchwork13. Nous avons reussi a representer tout ce qui 
+nous est necessaire tout en gardant un esprit ouvert pour l'utilisateur non 
+experiment\'e.
+
+\section{La fenetre principale}
+de haut en bas...
+\subsection{Le menu}
+Necessaire, grace a lui :
+\begin{itemize}
+\item
+  Cr\'eer un nouveau patchwork, ce qui ouvre une nouvelle fen\^etre
+  de patchwork et ajoute son nom (unique) dans la liste des fen\^etres
+  (dans le menu ``View'').
+
+\item
+  Ouvrir une bo\^ite de dialogue pour charger un patchwork, sauvegard\'e 
+  auparavent, qui ouvre une fen\^etre de patchwork portant le nom du fichier.
+
+\item
+  Un menu {\it View} permet de mettre en avant une des fen\^etres de 
+  patchwork ouvertes.
+
+\item
+  Changer les pr\'ef\'erences du cluster (changements que l'ont
+  peut \'eventuellement annuler si on s'est tromp\'e).
+  Les pr\'ef\'erences se r\'esument au chemin des ex\'ecutables du cluster, 
+  et l'on peut cliquer sur un bouton pour les s\'electionner {\it via} une
+  classique bo\^ite de dialogue de s\'election de fichier.
+
+\item
+  Afficher une fen\^etre avec la liste des serveurs du cluster,
+  que l'on peut rafraichir avec un bouton, cela \'evitant de saturer le
+  r\'eseau inutilement. Cette fonction utilise les fonctions du cluster,
+  la liaison entre l'interface et le cluster a donc d\'ej\`a commenc\'e.
+
+\item
+  Lancer un serveur sur la machine locale, le serveur lanc\'e
+  correspond \`a l'ex\'ecutable choisi dans les pr\'ef\'erences du
+  cluster.
+
+\item
+  Afficher une bo\^ite de dialogue ``\`A propos'', exercice simple
+  mais utile.
+
+\item
+  Quitter le programme, avec un message de confirmation. Cela
+  peut \'eviter de perdre un travail en cours par erreur.
+\end{itemize}
+
+\subsection{Le chargement manuel de patchs}
+Une zone de texte permetant de charger un patch avec son chemin. Cette 
+fonction est necessaire aux utilisateurs avanc\'e. On l'utilisera par exemple
+si l'on installe un patch pendant l'utilisation du Patchwork13!, afin de ne 
+pas avoir \`a le red\'emarrer. 
+
+\subsection{La liste des patchs}
+L'affichage de la liste des patches install\'e est completement indispensable 
+pour une utilisation '\`a la souris'. On peut en effet glisser-deplacer 
+les patchs directements dans les patchworks ouverts. Les patchs sont tri\'e par 
+genre, on peut ainsi derouler uniquement la famille de patches qui nous interesse 
+pour travailler.
+
+\section{Le patchwork}
+en haut, en bas et enfin au milieu...
+\subsection{Le menu}
+Necessaire et minimaliste, grace a lui :
+\begin{itemize}
+\item
+On peut sauvegarder un patchwork dans un fichier au choix, ou meme juste sauvegarder
+les modifications sur le travail en cours.
+\item
+Fermer le Patchwork.
+\end{itemize}
+\subsection{Le bouton}
+Indispensablement necessaire! Il nous est utile pour demarrer/arreter le patchwork.
+C'est un des elements de l'interface graphhique 
+\subsection{Le patchwork}
+L\`a o\'u tout commence..
+\subsubsection{Le corp}
+Une grande fen\^etre, vide \`a sa cr\'eation, ou l'on voit apparaitre patches et les 
+fleches qui les relient.
+\subsubsection{Les membres}
+LES PATCHES !!!
+
+\section{Les Patches}
+\subsection{Le contenu}
+de haut en bas, et une fois en bas, de gauche \`a droite..
+\subsubsection{le titre}
+Un nom unique pour chaque patch dans un patchwork. Une fonction permet, en cliquant 
+sur le nom du patch, de reduire le patch afin de simplifier la vision.
+\subsubsection{les entrees}
+De simples 'checkbox', permetant d'etre reli\'e par des sorties. Si la case est 
+coch\'e ou non, la connection est etablie ou non. 
+\subsubsection{les sorties}
+De meme que les entrees, de simples 'checkbox', permetant d'eter reli\'e \`a des 
+entrees. Si la case est coch\'e ou non, la connection est \'etablie ou non. 
+\subsection{La cr\'eation}
+La cr\'eation des patches est un des points les plus essentiels de l'interface 
+graphique du patchwork13. En effet, chaque patch (graphique) est cr\'ee directement 
+a partir du corps du patch. On devra donc bien afficher le nombre d'entr\'ees, 
+de sorties, faire attention aux types. Ce travail effectu\'e, nous avons des 
+patchs dans un patchwork, ca brille, c'est magnifique.
+\section{Le reste}
+L'interface graphique ne se resume pas a 2 ou 3 fenetres, tous les elements
+graphiques ont \'et\'e cr\'e par et pour le patchwork13. On verra apparaitre des 
+fenetres de confirmation, de sauvegarde, de superbes fleches courb\'e ...

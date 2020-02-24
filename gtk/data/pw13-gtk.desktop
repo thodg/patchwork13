@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Patchwork13!
+GenericName=Generalist modular synthesis
+GenericName[fr]=Synthèse modulaire généraliste
+Exec=pw13_gtk
+Icon=pw13
+Categories=Application;AudioVideo;
+Terminal=false
+Type=Application
+StartupNotify=false

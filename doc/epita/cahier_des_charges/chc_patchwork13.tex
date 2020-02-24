@@ -1,0 +1,693 @@
+\documentclass[14pt,a4paper]{article}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+
+\title{\textbf{Cahier des Charges}}
+\author{2B2S}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+Thomas 'billich' De Grivel
+\\
+Maxime 'loucha\_m' Louchart
+\\
+Bruno 'Broen' Malaquin
+\\
+Julien 'Splin' Valentin
+\\
+\vspace{5cm}
+
+\centerline{{\includegraphics{patchwork13.jpg}}}
+
+
+\end{center}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+Patchwork13 est notre projet pour cette ann\'ee de Sp\'e \`a l'EPITA.\\
+\par
+ C'est un outil de synth\`ese modulaire, capable de g\'en\'erer tous types
+de donn\'ees et de leur faire subir tout type de traitements supposants
+une \'evolution dans le temps. Les donn\'ees sont cr\'ees et modifi\'ees 
+par des modules (que nous appellons des \textsl{patches}) gr\^ace
+ \`a un syst\`eme de plug-ins.
+Ces patches sont reli\'es entre eux pour former un graphe,
+\'editable par le biais d'une interface graphique. Les donn\'ees
+ transitent alors de patch en patch \`a chaque instant T du calcul.\\
+\par
+Nous permettons ainsi \`a
+l'utilisateur lambda (non programmeur) de realiser \textbf{\`a la souris}
+ un nombre illimit\'e de fonctions complexes qui, gr\^ace \`a
+ l'aspect modulaire, deviennent tr\`es 
+faciles a mettre en \oe uvre. Il faut bien s\^ur pour cela que
+les modules n\'ecessaire \`a l'application aient \'et\'e ecrits
+auparavant, mais une fois \'ecrits, plus besoin de savoir programmer
+pour les utiliser.\\
+\par
+Pour donner quelques exemples restreints, les possibilit\'es vont
+ du simple calcul entier \`a la synth\`ese audio (que nous traiterons),
+ aux r\'eseaux de neurones en passant par des effets videos que l'on
+ pourrait cha\^iner \'a l'infini, ainsi que la g\'en\'eration d'animations
+ complexes en trois dimentions (que nous traiterons aussi).\\
+\par
+Pour en savoir plus, merci infiniment, par avance, d'avoir l'amabilite
+ de bien vouloir -- en ayant re\c{c}u toute l'assurance ainsi que la gracieuse
+ expression de nos sentiments les plus distingu\'es --
+ tourner cette page.
+
+
+\newpage
+
+\section{Nature du projet}
+\par
+Le projet sera \'ecrit en C standard pour maximiser la portabilit\'e,
+et sera notament port\'e sous Mac OS X et Windows. Il sera compos\'e
+ d'une interface graphique (pw13\_gtk) utilisant une librairie ``noyau''
+(pw13) elle-m\^eme capable de charger diverses librairies de patches.
+\\
+\par
+Ce projet est in\'edit, du moins \`a nos yeux.
+ Nous l'avons d\'efini par le terme `outil de synthese modulaire'
+ (modular synthesis toolkit).
+ Certains diront `bo\^ite \`a outils' pour souligner le c\^ot\'e
+ conceptuel de la r\'eunion de nombreuses fonctionalit\'es. Pourquoi pas
+ mais au final nous voulons cr\'eer un logiciel permettant
+ la composition de modules et bien plus encore.
+ Le projet se pr\'esentera par le
+ biais d'une interface graphique permettant le choix et la connexion des
+ modules, et donc l'\'edition du graphe du processus.
+ Ce processus pourra \`a l'extr\^eme \^etre tout et n'importe quoi.
+\\
+\par
+ Ce caract\`ere illimit\'e du projet lui apporte une grande
+ richesse du c\^ot\'e de l'utilisation et des possibilit\'ees.
+ G\'en\'erez une, deux, trois valeur(s) et appliquez leur quelques
+ dizaines de traitements bien
+ plac\'es et voyez le r\'esultat des calculs se faire en temps r\'eel !
+\\
+\par
+ De plus un accent sera mis sur la simplicit\'e : si tout les modules
+ sont pr\'esent pour faire ce que l'on desire, en quelques clics
+ le projet voulu sera \'elabor\'et si l'on veut plus, pas de de
+  probl\^eme puisque la conception de patch sera facilit\'e par
+ une structure simple pour ne pas d\'ecourager les \'eventuels d\'eveloppeurs.
+ Finalement c'est un logiciel aidant \`a la conception d'outils en
+ rassemblant et en mettant \`a disposition l'orchestration de plus
+ petits marteaux.\\
+
+
+\newpage
+
+\section{Origine du projet}
+
+\par
+Le projet Patchwork13! s'inspire ouvertement des debuts de la
+ musique electronique et de ses premiers synthetiseurs.
+\\
+\par
+Ceux-ci etaient dits modulaires car faits d'un assemblages de
+ modules appel\'es patches (comme dans patchwork).
+ Chaque patch effectuait un traitement simple sur le son,
+ et une fois connect\'es les uns aux autres permettaient
+ d'effectuer un traitement complexe.
+\\
+\par
+Cela offrait evidemment une liberte de composition des patches
+ virtuellement infinie, et surtout une abstraction du fonctionnement
+ de chaque patch : nul besoin d'etre electronicien ou de savoir faire
+ un patch pour les connecter, il suffisait de brancher un cable electrique.
+\\
+\\
+\par
+De nombreux logiciels de musique ont deja repris ce principe et
+ permettent de dessiner un graphe de patches, mais ils ont tous un
+ inconvenient commun : ils ne permettent de manipuler que du son
+ (des scalaires).
+\\
+\par
+D'autre part il existe tr\`es peu de logiciels permettant une
+ r\'eelle interaction entre les modules (controle de l'un par l'autre),
+ puisqu'on ne peut generalement que connecter la sortie son d'un module
+ \`a l'entr\'ee son d'un autre. Autrement dit on ne peut pas connecter
+ les param\`etres de ces modules.
+(Par exemple si on consid\`ere un module "filtre", on peut lui connecter en entr\'ee le signal a traiter, mais pas sa frequence propre : elle reste un
+ parametre \`a rentrer ``\`a la main'').
+\\
+\\
+\par
+Le projet Patchwork13 reprend litterallement le concept de patch,
+ et l'\'etend largement en permettant de typer les donn\'ees que
+ les patches manipulent.
+\\
+\par
+Les applications possibles depassent alors largement la musique
+ puisque la definition de nouveaux types de donn\'ees est possible.
+\\
+\par
+Un patch, peut alors \^etre assimil\'e \`a une fonction \`a $n$
+ param\`etres typ\'es, renvoyant $p$ valeurs typ\'ees.
+ Cela n'est pas sans rappeler la programmation fonctionnelle,
+ \`a laquelle on aurait ajoute une gestion du temps.
+Nuance non n\'egligeable puisque les languages fonctionnels actuels
+ utilisent tous un \textsl{garbage collector} qui peut induire des
+ temps de latence al\'eatoires, totallement incompatibles avec une
+ application temps r\'eel.
+
+\newpage
+\section{Int\'eret du projet}
+
+Le but principal de ce projet est d'apporter la possibilit\'e \`a des
+ personnes qui n'ont pas forc\'ement beaucoup de connaissances en
+ informatique, de pouvoir "programmer" visuellement. En effet,
+ le syst\`eme de patchs g\`ere l'encha\^inement de patchs les uns a la
+ suite des autres. Cela permet, pour un exemple basique, d'utiliser un
+ patch qui va faire une sorte de {\tt scanf} puis faire une liste
+ d'op\'erations math\'ematiques gr\^ace \`a d'autres patchs et d'en
+ afficher la sortie avec un patch \texttt{printf}.\\
+\par
+L'int\'er\^et de ce projet est qu'il est un vrai "couteau suisse"
+ permettant d'obtenir relativement simplement une combinaison
+ d'op\'erations plus ou moin complexe.
+ De plus l'integration d'un clustering a pour but de rendre cet outil
+ utilisable pour des taches qui requi\'erent enorm\'ement de ressources
+ syst\`eme, acc\'el\'erant donc ainsi le temps d'\'ex\'ecution.\\
+\par
+Sans vouloir para\^itre vantard, ce projet poss\`ede l'avantage d'avoir des
+ possibilit\'es infinies. Personnellement nous ne d\'evelopperons
+ pour le moment essentiellement que des libraires son, video et les
+ libraires standard accompagn\'ees de patchs respectifs. Cependant il faut
+ avoir \`a l'esprit que le projet n'a pas de bornes limitant son
+ int\'er\^et : il est tout a fait possible d'int\'egrer toutes les
+ fonction d'un logiciel de cr\'eation sonore comme frutty loops,
+ d'avoir des patch permettant de g\'en\'erer du pdf avec un simple texte
+ ou encore de greffer un module servant \`a la recherche d'analyse de sons
+ extraterrestres. 
+
+\newpage
+\section{\'Etat actuel du projet}
+
+\par
+On pourrait penser qu'un tel projet est trop ambitieux pour \^etre
+ r\'ealis\'e par quatre \'eleves d'info SPE \`a l'EPITA, mais non :
+\\
+\par
+Patchwork13 a en fait d\'emarr\'e bien avant que nous d\'ecidions
+ de le soutenir cette ann\'ee, sous forme de projet open-source
+ (sous license GPL) h\'eberg\'e par SourceForge.net.
+\\
+\par
+Officiellement lanc\'e l'ann\'e derni\`ere par billitch, celui-ci mature
+ depuis quelques ann\'ees d\'eja dans sa t\^ete. Il est donc inutile de
+ pr\'eciser qu'int\^eret et motivation sont pr\'esents.
+\\
+\\
+\par
+Actuellement \'ecrit en C plus ou moins standard, le projet actuel
+ se d\'ecoupe en trois parties :
+\begin{itemize}
+\item pw13 (le noyau) : une librairie permettant d'instancier et connecter
+ des patches, et de faire avancer les donn\'ees dans ceux-ci.
+\item pw13\_std : une librairie de patches standard qui manipulent
+ quelques types de donn\'ees simples (eg entiers, flottants, flux).
+\item pw13\_gtk : une interface graphique GTK+ permettant d'utiliser
+ les deux librairies pr\'ec\'edentes (et les futures autres librairies
+ de patches) "\`a la souris".
+\end{itemize}
+
+\par
+En plus de ces trois parties, un programme de d\'emonstration,
+ appell\'e pw13\_demo qui permet de tester les fonctionnalit\'es
+ pr\'esentes.\\
+\par
+Commen\c{c}ons par expliquer quelques concepts que le projet a d\'evelopp\'es
+
+
+\subsection{Concepts}
+
+\subsubsection{Patchwork}
+Structure contenant un graphe de patches.
+Il enregistre \'egalement les types de donn\'ees que manipulent les patches du graphe.
+
+\subsubsection{Classe de patch}
+\par
+Objet permettant de cr\'eer un patch.
+\par
+Il contient les fonctions membres du patch ainsi qu'un constructeur qui
+ enregistre les types de donn\'ees aupr\`es du patchwork, initialise
+ le patch et le lie \`a ses fonctions membres gr\^ace \`a des pointeurs
+ vers fonctions.
+On l'utilise principalement sous forme de librairie dynamique.
+
+\subsubsection {Patch}
+Objet comportant :
+\begin{itemize}
+\item un tableau d'entr\'ees
+\item un tableau de sorties
+\item une ou plusieur fonctions membres, notament celle qui calcule
+ la valeur des sorties en fonction de celles des entr\'ees (pump).
+\end{itemize}
+
+\subsubsection {Entr\'ee}
+\par
+Structure dot\'ee d'un pointeur sur une sortie, d'un type de
+ donn\'ees (pour verifier l'homog\'en\'eit\'e), et d'une valeur
+ par d\'efaut qui est utilis\'ee si l'entr\'ee n'est connect\'ee
+ \`a aucune sortie.
+
+\subsubsection {Sortie}
+\par
+Structure contenant une liste des entr\'ees qui y sont connect\'ees,
+ un type de donn\'ees (pour l'homog\'en\'eit\'e) et une donn\'ee
+ (\`a laquelle acc\`edent les patches connect\'es pour calculer les
+ valeurs de leurs sorties, ou op\'erer un effet de bord).
+
+\subsubsection{Donn\'ee}
+\par
+Union de tous les types simples que le C standard fournit.
+\\
+\par
+On peut notemment y mettre un pointeur vers un type structur\'e, une fonction, un patch...
+\\
+\par
+Le type n'est pas enregistr\'e dans la donn\'ee puisqu'on ne peut connecter que des entr\'ees et sorties dont les types sont compatibles. Un type n'est donc qu'un nom donn\'e \`a une convention respect\'ee par les patches.
+
+
+\subsection{pw13}
+
+\par
+pw13, la librairie noyau, fonctionne.
+\\
+\par
+Elle peut charger une classe de patch depuis un fichier
+ (une librairie dynamique),
+ cr\'eer un patchwork, instancier des patches dedans,
+ les connecter puis faire fonctionner le tout
+ (pomper les donn\'ees \`a travers les patches).
+
+
+\subsection{pw13\_std}
+
+\par
+La librairie de patches standard est en fait une collection de classes de
+ patches.
+\\
+\par
+Elle doit fournir les manipulations de bases sur quelques types
+ de donn\'ees simples. Loin d'\^etre compl\`ete, elle contient
+ d\'ej\`a quelques classes, qui sont ordonn\'ees selon le type
+ auquel elles se ratachent le plus :
+\begin{itemize}
+\item entier : addition, soustraction, division euclidienne,
+ factorielle, maximum, \'ecriture dans un flux.
+\item nombre flottant : addition, soustraction, oscillateur,
+ sinus (d\'esol\'e splin), \'ecriture dans un flux, affichage
+ (en chiffres) dans un flux.
+\item flux : stdin, stdout, stderr, tubes (non test\'e).
+\item texte : concat\'enation, \'ecriture dans un flux.
+\item temps : incrementation, conversion depuis un flottant.
+\end{itemize}
+
+\par
+Seules quelques une de ces classes ont \'et\'e test\'ees,
+ il est donc probable que certaines ne marchent pas.
+
+
+\subsection{pw13\_gtk}
+
+\par
+L'interface graphique pour GTK+.
+\\
+\par
+Encore au stade d'embryon, tout est \`a (re)faire puisque le peu
+ ayant \'et\'e r\'ealis\'e utilise directement les fonctions de GTK+.
+\\
+\par
+\textsl{Pure folie} pour ceux qui connaissent glade (une interface graphique
+ de cr\'eation d'interfaces graphiques, g\'en\'erant les sources
+ qui utilisent GTK+), et
+\textsl{suicide} pour celui qui connait libglade, une librairie
+ qui permet de charger dynamiquement une interface concue avec glade.
+\\
+\par
+L'int\^eret est de ne pas avoir a recompiler quoi que ce soit pour
+ modifier l'interface puisque celle-ci est charg\'ee depuis un
+ fichier XML lors de l'execution du programme.
+\\
+\par
+Toute l'interaction entre l'interface, la librairie noyau et les
+ diverses librairies de patches reste \`a faire.
+
+
+\subsection{pw13\_demo}
+
+\par
+Un petit programme de test, qui fonctionne !
+\\
+\par
+Il appelle les fonctions de pw13 pour cr\'eer un patchwork, charger
+ quelques classes, cr\'eer quelques patches, les connecter et pomper
+ les donn\'ees a travers les patches.
+\par
+Actuellement, il connecte une constante flottante \`a la frequence
+ d'un oscillateur lui m\^eme reli\'e \`a un patch qui affiche
+ un fottant, \`a son tour connect\'e \`a un patch
+ d'incr\'ementation du temps.
+
+\newpage
+\section{D\'ecoupage du projet}
+
+Voici comment notre travail sur le projet sera d\'ecoup\'e.
+
+\subsection{Noyau}
+Par billitch.
+\\
+\par
+Si le noyau fonctionne actuellement, il reste toutefois des choses \`a revoir :
+\begin{itemize}
+\item le parcours du graphe est fait r\'ecursivement, ce qui impose une
+ limite sur sa profondeur. Un algorithme it\'eratif sera \'evidemment
+ plus adapt\'e.
+\item les listes d'entr\'ees et de sorties d'un patch sont en fait des
+ tableaux allou\'es lors de la cr\'eation du patch. Une impl\'ementation
+ par des listes chain\'ees rendrait abordable l'ajout et la suppression
+ d'entr\'ees et sorties en cours de calcul.
+\item les types de donn\'ees ne sont compatibles que s'ils sont
+ identiques. On pourrait permettre de faire un alias d'un type,
+ d'indiquer la compatibilit\'e entre deux types, et m\^eme g\'erer
+ un polymorphisme !
+\end{itemize}
+
+
+\subsection{Librairie standard}
+Par tout le monde.\\
+\par
+La librairie standard contiendra les fonctions de base mais tr\`es
+ importantes (addition, multiplication, sinus, ...). Pour l'utilisateur, elle
+ permettra de se familiariser avec le logiciel et restera omnipr\'esente
+ pour ajouter des calculs simples au traitement.\\
+\par
+Nous comptons tous travailler dessus pour nous familiariser avec le code
+ deja present (sauf pour billitch). La cr\'eation des op\'erations sur les
+ types simples (flottant, entier, texte...) sera donc de la partie lorsque
+ nous nous concentrerons sur cette librairie.
+
+\subsection{Interface graphique}
+\par
+Par Billich \& loucha\_m
+\\
+\par
+l'interface graphique, essentielle a une bonne comprehension et une
+ simple utilisation du patchwork13, sera compos\'ee de plusieurs parties.
+\subsubsection{La fen\^etre principale}
+Elle sera compos\'ee
+\begin{itemize}
+\item D'une barre des taches pr\'esentant les differentes
+ fonctionnalit\'es utilisateur. On y verra apara\^itre des outils
+ de base tels que charger un patchwork, sauvegarder.. et les differents
+ outils graphiques n\'ecessaire a l'\'elaboration d'un patchwork.
+\item D'une boite \`a patch, contenant les diff\'erents patch
+ utilisables a cet instant pour l'\'elaboration d'un patchwork.
+ On pourra voir les details de chaque patch et y choisir le plus adequat.
+\item D'une fen\^etre de log, permetant d'afficher pas \`a pas le suivi
+ du patchwork et en cas d'erreurs les afficher afin de les corriger ais\'ement.
+\end{itemize}
+
+\subsubsection{La fen\^etre d'un patchwork}
+La fen\^etre du patchwork est l'espace de travail o\`u l'on peut lier,
+ gr\^ace a la souris, les patchs entre eux. On y verra le graphe
+ des patchs, qui sera represent\'e comme l'utilisateur le souhaite.
+ Il lui suffira de deplacer les patchs pour qu'il adapte la forme de
+ son patchwork \`a sa representation mentale.
+
+\subsubsection{La fen\^etre d'un patch}
+\par
+Chaque patch sera repr\'esent\'e dans la fen\^etre de son patchwork par un
+widget GTK+ o\`u toutes les propri\'et\'es du patches seront accessibles.\\
+Cela inclue les entr\'ees et sorties du patch, que l'on pourra
+connecter \`a celles d'un autre
+patch en tirant \`a la souris une ligne entre les deux.\\
+\par
+Le probl\^eme se corse lorsque l'on veut g\'erer une interface propre \`a
+une classe de patches. Par exemple on aura un patch o\'u
+l'utilisateur peut taper un nombre au clavier dans la fen\^etre du patch,
+qui renverra alors cette constante en sortie.\\
+\par
+Pour cela, il faut que les patches qui veulent une interface graphique
+fournissent une fonction pour cr\'eer cette interface.\\
+Cette fonction prendra en param\`etre le widget du patch et y cr\'eera
+les widgets propres au patch.
+
+
+\subsection{Librairie d'entr\'ee/sortie audio}
+\par
+Par loucha\_m
+\\
+\par
+Dans notre objectif final du patchwork13, les entr\'ees et sorties
+ sonores sont primordiales pour sentir l'interactivit\'e avec la machine.
+Entr\'ees et sorties sonores, cela implique une communication
+ avec la machine et plus pr\'ecisement la carte son.
+ Pour ce faire, la librairie utili\'ee sera la SDL.
+Un moment de doute nous est venu lors de ce choix. En effet, Fmod, d\'eja
+ utilis\'ee par plusieurs membres du groupe \`a ete notre premier choix.
+ Mais la SDL est, au niveau du code assez similaire.
+ Ce n'est pourtant pas cela qui nous a decid\'es. L'important pour nous
+ est que la SDL est open source est ne demande en aucun cas de payer
+ pour l'utiliser, a l'inverse de Fmod.\\
+\par
+Cette partie, de communication sonore avec la machine, m'int\'eresse par
+ son c\^ot\'e multimedia et interactif. L'utilisation l'an dernier de
+ la librairie Fmod etait tres int\'eressante et pouvoir changer de temps
+ en temps, he ben! \c{c}a fait pas de mal!
+
+
+\subsection{Librairie de traitement et synth\`ese audio}
+Par billitch et Splin.
+\\
+\par
+Faisant tous les deux de la musique sur ordinateur, nous sommes particuli\`erement
+int\'eress\'es par la synth\'ese du son.
+Cr\'eer son propre instrument est toujours fortement jouissif, et
+la synth\`ese audio n'est pas l'origine du projet sans raison.
+
+\subsubsection{Synth\`ese}
+Nous d\'ecomposerons la g\'en\'eration d'un son de la mani\'ere suivante :
+\begin{itemize}
+\item Les patches ``synth\'etiseurs'' prennent en param\`etre une fr\'equence
+(donc un nombre flottant) et \'eventuellement d'autres param\'etres.
+\item Un patch pour dessiner des courbes de fr\'equences.
+\item On fournira un patch pour convertir une note en fr\'equence,
+ et r\'eciproquement.
+\item Divers patches de g\'en\'eration de notes.
+\item On pourra eventuellement faire des patches de transformation des notes
+ (eg transposition, changement d'octave, transformation majeur-mineur)
+\item Il faut ajouter \`a \c{c}a des patches d'enveloppe (le volume des
+ notes jou\'ees)
+\end{itemize}
+
+\subsubsection{Traitement}
+La librairie permettra de traiter le signal audio, nous proposons
+d'impl\'ementer nous m\^eme les effets suivants :
+\begin{itemize}
+\item delai (echo)
+\item filtres passe haut, passe bas, passe bande
+\item dynamiques : limiteur, compresseur
+\end{itemize}
+
+\subsection{Librairie OpenGL}
+Par Broen\\
+\par
+Nous comptons cr\'eer quelques patchs permettant d'utiliser les
+ fonctionnalites de la  librairie OpenGl. Nous ne pourrons pas tout
+ apporter a l'utilisateur mais nous essayerons d'ammener un minimum
+ de fonction pour l'aider, a travers des modules.
+\\
+\par
+ Par exemple par le biais de plusieurs patchs prenant en parametre
+ diverses donn\'ees, le processus affichera un cercle, triangle, onde...
+ bien sur il faudra ecrire des types pour g\'erer la 3D
+ (point, ligne, volume).\\
+\par
+La librairie OpenGL s'est naturellement impos\'ee pour g\'erer
+ cette partie par sa portabilite, sa simplite et sa puissance
+ face a ses concurrents...\\
+\par
+J'ai choisi de m'occuper de cette partie pour explorer cette librairie
+ qui me para\^it tr\`es interessante a conna\^itre. Dans mes deux
+ pr\'ec\'edents projets je suis pass\'e \`a cote et enfin je vais
+ pouvoir la d\'ecouvrir. Elle me reservira surement dans le futur
+ donc autant commencer d\`es maintenant.
+
+\subsection{Cluster}
+Par Broen et Splin\\
+\par
+Le cluster le permettra d'augmenter les possibilit\'es de ce projet.
+ En effet cela conferera une puissance de calcul et une rapidite
+ d'ex\'ecution de l'encha\^inement des patchs si le processus est
+ trop fastidieux a obtenir pour une seule machine.\\
+\par
+Pour ce faire, nous utiliserons la librairie standard du C pour
+ g\'erer le clustering. La raison de ce choix est que nous voulions
+ coder directement avec les possibilit\'es de base du langage C.
+ Une autre raison est que les librairies qui nous interessaient
+ poss\`edent des contraintes, telles que la portabilit\'e, ou encore
+ le protocole reseau utilis\'e, qui les ont exclues.\\
+\par
+La m\'ethode utilis\'ee sera client-serveurs : les serveurs en ecoute,
+ attendent une requete du client et renveront le resultat du travail qui
+ leur aura ete demande. Tant au niveau client que server, il y aura 3
+ threads : un de r\'eception, un d'envoi et un de calcul.\\
+\par
+Interets de Broen et Splin : ayant en commun un inter\^et pour le reseau
+ nous avons decid\'e de nous occuper de cette partie. Tout les deux nous
+ avons realis\'e la partie reseau de nos projets de Sup respectif et
+ Broen celui de Spe \'egalement. De plus, travailler directement avec
+ les sockets nous para\^it bien plus enrichissant qu'utiliser une librairie.
+ La raison certainement la plus pertinente est que nous pensons fortement
+ \^a travailler dans ce domaine dans l'avenir.
+
+\subsection{Maintenance et programmes d'installation}
+Tout le monde.
+\\
+\par
+Le projet est actuellement g\'er\'e avec autoconf et automake, ce qui le rend
+facile \`a porter sur la plupart des UNIX et m\^eme windows grace \`a 
+MinGW (Minimalist GNU for Windows) et MSYS qui permettent de compiler avec gcc
+les applications UNIX en programme Windows natif.\\
+\par
+Nous fournirons tout de m\^eme un programme d'installation pour Mac OS X
+et Windows, afin de rester accessible \`a tout public.
+
+
+\subsection{Documentation}
+Tout le monde.
+\\
+\par
+Chaque partie du projet devra \^etre document\'ee en m\^eme temps que
+ le d\'eveloppement par la personne s'occupant de la partie,
+ puisque c'est elle qui connait le mieux le sujet.
+\\
+\par
+Doxygen, un programme g\'en\'erant une documentation \`a partir du code source, s'averera surement utile pour documenter les librairies.
+
+\newpage
+\section{Logistique}
+
+\subsection{Planning ?}
+\rule{0cm}{1cm}\\
+\centerline{\includegraphics[width=13cm]{planning.jpg}}
+
+\newpage
+\subsection{Planning !}
+\begin{center}
+\begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+ Soutenance 1          & Soutenance 2               & Soutenance 3               & Soutenance Finale \\
+\hline
+\hline
+\begin{itemize}
+  \item Revoir le noyau
+  \item Interface
+    \begin{itemize}
+      \item Boite a patch
+      \item Fenetre patchwork
+      \item Glisser-deposer
+    \end{itemize}
+  \item Cluster (debut)
+  \item Entree\textbar Sortie son
+\end{itemize}
+ &
+\begin{itemize}
+  \item Interface
+    \begin{itemize}
+      \item Widget patches
+      \item Connector patches
+    \end{itemize}
+  \item Cluster (milieu)
+\end{itemize}
+ &
+\begin{itemize}
+  \item Lib de patches (traitement du son)
+  \item Lib OpenGL
+  \item Cluster (Fin)
+\end{itemize}
+ &
+\begin{itemize}
+  \item Instalation (multi-plateformes)
+  \item Documentation
+  \item Relier Cluster et Interface
+\end{itemize}
+\\
+\hline
+\end{tabular}
+\end{center}
+
+\rule{0cm}{1cm}\\
+
+\subsection{Couts mat\'eriels}
+
+\begin{itemize}
+\item un powerbook 13'', trois PC.
+\item 523 machines en r\'eseau pour tester le cluster
+\item Plateformes de d\'eveloppent
+\item Environ 600 litres de biere, 160 pizzas, 160kg de frites \ldots\\
+ En resum\'e, ca va nous couter cher.
+\end{itemize}
+
+\section{R\'ef\'erences}
+
+\begin{itemize}
+\item EPITA --  Ecole Pour l'Informatique et les Techniques Avanc\'ees\\
+      http://www.epita.fr/
+\item Patchwork13! -- Synth\`ese modulaire universelle\\
+      http://patchwork13.sourceforge.net/
+\item OpenGL -- Open Graphic Library\\
+      http://www.opengl.org/
+\item SDL -- Simple DirectMedia Library\\
+      http://www.libsdl.org/ 
+\end{itemize}
+\rule{0cm}{5mm}\\
+Synth\'etiseurs modulaires (audio) :
+\begin{itemize}
+\item Buzz -- Populaire et gratuit\\
+      http://www.buzzmachines.com/
+\item MAX/MSP -- S\^urement le plus puissant synth\'etiseur modulaire \`a ce jour\\
+      http://www.cycling74.com/products/maxmsp.html
+\item jMax -- Le clone java open-source de Max/MSP, d\'evelopp\'ee par l'IRCAM\\
+      http://freesoftware.ircam.fr/rubrique.php3?id\_rubrique=2
+\end{itemize}
+
+\newpage
+\section{Conclusion}
+
+Outre l'aspect travail, nous sommes un groupe qui nous connaissons depuis
+ la Sup mais nous n'avions pas \'et\'e dans les m\^emes groupes jusque l\`a.
+ Ceci va nous permettre de coder dans une ambiance conviviale et d\'etendue
+ (Dis moi une question : Qui est d\'etentu ?). A notre ce sens ceci jouera\
+ forc\'ement sur le travail et sur l'avancement du projet.\\
+\par
+Passons maintenant a l'autre aspect. Collectivement nous avons tous touch\'e
+ de plus moins loin au milieu de la musique (composition, mix, instrument ...)
+ ou de la video. Mais le fait que le projet ait une dimention presque
+ infinie et que de nombreuses personnes ext\'erieures soient
+ int\'er\'ess\'ees par l'id\'ee nous motive grandement. De plus, le projet
+ est sous GPL ce qui permettra aux personnes ext\'eriereures de
+ d\'evelopper des patchs et former une communaut\'e par la suite ce qui
+ serait a notre sens une reussite sur tous les plans.\\
+
+\newpage
+
+\begin{center}
+MERCI.
+\end{center}
+
+\end{document}

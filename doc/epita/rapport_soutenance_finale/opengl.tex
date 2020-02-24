@@ -1,0 +1,147 @@
+\section{OpenGL}
+
+\subsection{Pr\'esentation g\'en\'erale}
+
+La partie OpenGl du projet permettra aux utilisateurs d'avoir des patchs
+ de base leur permettant de faire de la 3d sans se prendre la t\^ete. Bien
+ \'evidement l'openGl est roi dans ce domaine et surtout en accord avec notre 
+projet qui doit rester portable.  Pour les m\^emes raisons nous avons
+ choisi d'utiliser la SDL pour accompagner l'impl\'ementation de l'OpenGl. 
+C'est une librairie multi-plateforme permettant de manipuler pas mal de choses
+ qui pourrait \^etre utile dans Patchwork13 plus tard (acc\'es au clavier, 
+souris, joystick).
+
+
+\subsection{Patches Opengl}
+
+Il a fallu d\'ecouper les possibilit\'ees d'OpenGl sous forme de patchs. 
+Toutes les fonctionalit\'ees n'ont pas \'et\'e 
+transcrites pour simplifier le travail et aussi sans en faire pour que ce
+ soit inutile, OpenGl va tr\`es loin d\'un point de  vue technologique 
+(Vertex Shader, Volumetric Frog, \ldots). Seuls des patchs de base ont 
+donc \'et\'e impl\'ement\'e ce qui reste suffisant pour faire de la 3D 
+correcte tout de m\^eme. De nombreux patches vont d\'esormais vous \^etes 
+pr\'esent\'es :
+
+
+\subsubsection{Surface}
+
+J'ai commenc\'e par faire l'initialisation de la surface avec toutes les 
+lignes de codes que cela implique. Au passage j'y ai int\'egr\'e les 
+param\^etres me permettant pour plus tard d'utiliser les fonctionalit\'es 
+que je voulais. L'initialisation de la surface OpenGl se fait \`a partir 
+d'un \^ev\'enement ``start''. Puis l'enchainement des fonctions et des
+ param\^etres se d\'eclenchent : param\^etrage de la video,
+ initialisation de la surface, redimensionage de la fene\^tre \ldots Le 
+``pump'' du patch permet juste de faire un swap des buffers de rendu openGL, 
+soit d'afficher le prochain rendu 3d de la sc\'ene. En harmonie avec 
+``Surface'', ``SDL\_init'' est le patch permettant de faire l'initialisation 
+de la SDL comme son nom l'indique. Il doit \^etre plac\'e en t\^ete car 
+certains patches ont besoin d'informations, par exemple, pour savoir si 
+le patche peut \^etre utilis\'e sur l'ordinateur (l'extention ``Vertex 
+Buffer Object'' par exemple). 
+
+
+\subsubsection{Forme et d\'eplacement}
+Ensuite il y a les patches triangle et quad prenant en param\^etre un 
+flottant indiquant leur taille simplement ensuite je fait un
+``glBegin(GL\_TRIANGLES)'' ou ``glBegin(GL\_QUAD)'' et
+j'obtiens une forme pla\c{c}ant les points en fonction
+de la taille. Pour pouvoir placer ces triangles o\`u l'on veut j'ai cod\'e un
+patch permettant de translater le point de vue, soit il prend en param\^etre, 
+x, y et z, lui
+permettant de se d\'eplacer l\'a o\`u l'on veut puis hop on dessine sa forme
+on se red\'eplace et paf encore une autre forme. Parfait mais il faut ensuite 
+inclure la notion de 3d dans tout \c{c}a.
+Le patch rotation est l\`a pour \c{c}a,
+il prend en param\^etre l'angle plus l'axe de rotation
+avec x, y, z. Par exemple
+si on veut faire une rotation du  haut vers le bas on va l\'appeler avec les z
+positif et le reste  a z\'eros sauf l'angle bien s\^ur. A partir de \c{c}a on
+peut cr\'eer des formes en 3d en calant bien comme il faut les facettes des
+objets (cubes, pyramides,\ldots). Un autre petit patch dans le m\^eme style
+est l\`a aussi pour remettre le point de vue au point z\'eros avec un 
+``glLoadIdentity()'', en général que l'on met en début de patchwork et 
+donc j'ai rajouté un ``glClear(\ldots)'' pour simplifier la mise en place. 
+Il existe tout de m\^eme un patch permettant de faire uniquement le 
+``glclear(\ldots)''.
+
+
+
+\subsubsection{Attrayance : Couleur, Transparence, Lumi\'eres et Textures}
+
+Voil\`a c'est d\'ej\`a bien mais on peut rendre cela plus attrayant avec de
+ la couleur et de la transparence par exemple. En faite \c{c}a se passe un
+ peu comme si on modifait une variable globale qui serait la couleur courante.
+ Le patch prend en param\^etre les entr\'ees de la fonction qui sera appell\'e
+ pour modifier cette variable locale soit \`a la norme du rgb, donc le rouge,
+ vert et bleue en flottant, j'ai ajout\'e un param\^etre alpha pour la
+ transparence donc sans avoir la possibilit\'e de faire sans. Le patch sera
+ donc lanc\'e avec alpha \`a 1 si on veut une application de la couleur opaque 
+par le biais de la valeur par d\'efaut.\\
+
+Comme autre ``gadget'', j'ai impl\'ement\'e une lumiere globale. On lui passe 
+juste sa position (x,y,z). Je dis globale parce que l'on ne peut qu\'en 
+mettre une, 
+de plus les normales des faces n'ont pas \'et\'e impl\'ement\'ees donc la 
+lumiere 
+se r\'eparti un peu n'importe comment sur les faces\ldots \\
+
+
+Pour texturer les diverses faces, il y a plusieurs fa\c{c}ons. Pour rendre 
+cela 
+plus souple pour les utilisateurs du logiciel, nous avons d\'ecid\'e de 
+traiter 
+les textures comme des surfaces que l'on collerait donc sur les facettes des
+ formes que l'ont cr\'ee. A partir d'un ``start'' du patch on charge la texture
+ propre au patch (soit il faut lancer un patch par texture) dans une
+ variable \`a
+ partir d'une image qu'on donne en param\^etre au patch. Puis il faut d\'efinir
+ des vecteurs pour cadrer la pose. Pour que se fasse j'ai cr\'e un type 
+vect4f(x,y,z, profondeur)
+ permettant de simplifier le proc\'ed\'e de param\^etrage. Comme on 
+applique un plan
+ il y a 2 vecteurs un pour les abcisses l'autre les ordonn\'ees. Donc
+ pour l'utiliser on applique une rotation tout pareil que la facette que 
+l'on va
+ cr\'e\'e et on appelle ce patch qui en pompant va s\'electionner la texture
+ en m\'emoire et l'appliquer telle un r\'etroprojecteur.
+
+
+
+\subsubsection{Optimisation et Transformation}
+
+On a voulu pouss\`e la section OpenGL un peu plus loin et exploit\'e un type 
+fournit par OpenGL nous permettant d'accéder aux vertex (un sommet de 
+l'espace) et de les modifier en m\'emoire tr\'es simplement. Ce type est le 
+``Vertex Array'' un patch cube, par exemple, permet de cr\'eer la forme dans
+ notre type en allouant au start le tableau de vertex et en reconstruisant la 
+forme \`a chaque pump. De ce fait on peut faire n'importe quel patch prenant en
+entr\'é un type tableau correspondant au ``Vertex Array'' cela peut-\'être un 
+type contenant des couleurs ou des normales, et donc modifi\'e directement 
+chaque x,y ou z de la forme. Il y a un exemple de ce type de transformation 
+qui modifit la taille de la forme pass\'e en param\^etre soit un tableau de 
+vertex dans cette exemple l\`a. Ensuite il faut afficher ce type de donn\'e, 
+un autre patch intervient (logique) pour effectuer cette manipulation il 
+definit les ``Vertex Array'' et proc\'ede \'a l'envoit dans les buffers 
+d'OpenGL avec ``glDrawArrays(\ldots)''. 
+
+
+\subsubsection{Types sp\'eciales OpenGL et optimisations}
+
+Deux autres patches ont aussi \'et\'e cr\'ee pour fournir des exemples sur 
+d'autres types de donn\'ees d'OpenGL. Le premier est sur les ``Display List'' 
+une optimisation de code permettant de fixer une forme en et de ne pas appeler 
+les ``glBegin(\ldots)'' et ``glEnd(\ldots)'' à chaque fois. Dans le 
+m\^eme patche pour aggr\'ementer la chose, une fonction de Bezier est 
+implement\'e pour ``tripper''. \\
+L'autre patche est une optimisation assez avanc\'ee que l'on ne peut pas 
+mettre en place partout car elle demande la prise en charge de l'extention 
+add\'equate, mais aussi une carte graphique avec une m\'emoire unifi\'e pour 
+que cela soit 
+b\'en\'efique. Il s'agit du ``Vertex Buffer Object''. Pour expliquer son 
+fonctionnement je ne dirais juste que c'est comme les ``Vertex Arrays'' sauf 
+que l'on stocke les donn\'ees dans la m\'emoire de la carte graphique. Il y a 
+un grand avantage \'a cela si la donn\'ee est statique mais si l'on veut la 
+modifi\'e \c{c}a perd de son inter\^et soit l'optimisation du traitement des 
+objets.

@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: pw13_cluster
+Description: The Patchwork13! cluster client library
+Version: @VERSION@
+Libs: -L${libdir} -lpw13_cluster_c-0
+Cflags: -I${includedir}/pw13-0
+Requires: libpw13-0 libxml-2.0

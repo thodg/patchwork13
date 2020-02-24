@@ -1,0 +1,50 @@
+#! /bin/sh
+
+SED='sed y+/+\\+'
+
+MODE=$1
+LIB_DIR=$2
+LIB_NAME=$3
+
+cd $LIB_DIR
+
+install () {
+    for d in `ls -d */`; do
+	F=`ls -1 ${d}.libs/*.dll 2>/dev/null | head -n 1`
+	if [[ "x$F" != "x" ]]; then
+	    dd=`echo $d | sed 's:/*$::'`
+	    echo
+	    echo '  SetOutPath "$INSTDIR/lib/'$LIB_NAME'/'${dd}'"' | ${SED}
+
+	    ls -1 ${dd}/.libs/*.dll ${dd}/.libs/*.la 2>/dev/null | \
+	    awk '{print "  File \"'$LIB_DIR'/"$$1"\""}' | ${SED}
+	fi
+    done
+}
+
+uninstall () {
+    for d in `ls -d */`; do
+	F=`ls -1 ${d}.libs/*.dll 2>/dev/null | head -n 1`
+	if [[ "x$F" != "x" ]]; then
+	    cd ${d}.libs
+
+	    ls -1 *.dll *.la 2>/dev/null | \
+	    awk '{print "  Delete \"$INSTDIR/lib/'$LIB_NAME'/'$d'"$$1"\""}' | \
+	    ${SED}
+
+	    echo '  RMDir "$INSTDIR/lib/'$LIB_NAME'/'${d}'"' | ${SED}
+	    echo
+	    cd -
+	fi
+    done
+    echo '  RMDir "$INSTDIR/lib/'$LIB_NAME'"' | ${SED}
+}
+
+case "$MODE" in
+    "install")
+	install;;
+    "uninstall")
+	uninstall;;
+    *)
+	echo "Usage: $0 (install|uninstall) lib_dir lib_name";;
+esac

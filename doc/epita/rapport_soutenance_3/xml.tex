@@ -1,0 +1,119 @@
+\chapter{Importation et exportation en XML}
+
+Un autre ajout \`a la librairie noyau est l'utilisation du format XML
+pour importer et exporter un patchwork (et toutes les structures
+qui le composent) dans un fichier. Nous disposons d\'esormais de fonctions
+d'imporation et d'exportation pour chaque structure de patchwork13.\\
+\\
+
+\section{Repr\'esentation d'un graphe}
+
+Une \'etape int\'eressante a \'et\'e la structure de graphe
+du patchwork puisqu'il faut enregistrer les sommets tri\'es
+topologiquement
+pour pouvoir enregistrer les arcs comme des liens vers le parent.
+En effet, si lors de l'importation un sommet (un patch) est reli\'e
+par un arc \`a un autre patch qui n'a pas encore \'et\'e import\'e,
+nous allons vers de gros probl\`emes. Le tri topologique du patchwork
+r\'esoud simplement ces probl\`emes puisque le graphe peut alors \^etre
+repr\'esent\'e comme une foret.\\
+\\
+
+\section{Informations suppl\'ementaires}
+
+Le probl\`eme s'est largemement complexifi\'e lorsque nous
+avons voulu enregistrer pour chaque patch un peu plus que
+les informations du noyau dans le m\^eme fichier XML.\\
+
+
+\newpage
+
+\subsection{Exportation}
+
+Pour l'interface graphique, nous voulions enregistrer la position
+de chaque patch dans la fen\^etre. Nous avons donc d\'efini une
+m\'ethode {\tt ``xml export patch''} pour chaque patch lors de sa
+cr\'eation dans l'interface et nous l'avons associ\'ee \`a
+la fonction d'importation d'un patch de l'interface graphique.\\
+\\
+Il faut peut-\^etre rappeller que si un patch d\'efinissait d\'ej\`a
+une m\'ethode {\tt ``xml export patch''}, sa fonction puis celle de
+l'interface seront appell\'ees successivement. Toutes les fonctions
+seront appell\'ees avec un m\^eme param\`etre d'appel, dans notre exemple
+c'est une structure utilis\'ee pour l'exportation, mais aussi avec un
+param\`etre de m\'ethode propre \`a chaque fonction.\\
+\\
+Il faut \'evidemment que chaque fonction exporte une balise XML ayant
+un nom diff\'erent pour pouvoir retrouver ses informations lors de
+l'importation. Un patch devra ainsi exporter une balise dont le nom
+contiendra son type complet ({\em eg.} {\tt<std\_float\_sinus>} ou
+{\tt<gtk\_float\_const>}). Les patches peuvent alors exporter toutes
+les informations qu'ils d\'esirent.\\
+\\
+L'interface graphique
+exporte une balise {\tt<pw13\_gtk>} ne contenant pour l'instant que
+les attributs {\tt x} et {\tt y} indiquant la position du patch.
+
+
+\subsection{Importation}
+
+Lors de l'importation de ces donn\'ees, le fichier XML est parcouru
+pour importer chaque patch qui est d'abord initialis\'e. C'est \`a ce
+moment qu'il peut ajouter sa fonction d'importation \`a la m\'ethode
+``xml import patch''. La m\'ethode est alors appel\'ee et les
+informations propres au patch sont alors r\'ecup\'er\'ees.\\
+\\
+Il faut que la fonction d'importation propre au patch parcoure
+la liste des balises de donn\'ees suppl\'ementaires \`a la recherche
+de sa balise au nom unique pour diff\'erentier ses donn\'ees
+de celles des autres fonctions.\\
+
+
+\subsubsection{Le probl\`eme}
+
+Il y a pourtant une erreur dans cette mani\`ere simpliste
+de r\'ecup\'erer les donn\'ees du patch : l'interface graphique n'a dans
+ce processus aucun moyen d'associer sa fonction d'importation au patch
+puisque celui-ci vient d'\^etre cr\'e\'e par la fonction d'importation
+du patchwork.\\
+
+\newpage
+
+\subsubsection{La solution}
+
+Il faut donc associer la m\'ethode de r\'ecup\'eration des donn\'ees
+du patch non pas au patch qui n'existe pas encore mais \`a un autre
+objet qui d\'ej\`a allou\'e lors de l\'importation. Le patchwork \'etant
+l'objet directement au dessus du patch, il \'etait assez naturel de
+le choisir pour y associer la m\'ethode.\\
+\\
+Le patch recoit comme param\`etre d'initialisation le patchwork
+le contenant. L'adaptation a donc \'et\'e assez imm\'ediate.
+\\
+
+\subsubsection{Le futur probl\`eme et sa solution}
+
+Le probl\`eme a \'et\'e r\'esolu pour les patches mais il risque d'y
+avoir le m\^eme pour importer des patchworks.
+La solution future \`a ce probl\`eme futur est d'associer les
+m\'ethodes li\'ees \`a l'importation des donn\'ees \`a la structure
+utilis\'ee par le noyau pour l'importation (appell\'ee {\tt pw13\_import}).\\
+On pourra alors r\'ecup\'erer des informations propres \`a chaque objet
+import\'e sans se soucier de l'ajout des m\'ethodes d'importation \`a
+l'objet en train d'\^etre import\'e.\\
+\\
+
+\subsection{La g\'en\'eralisation des m\'ethodes}
+
+Finallement, nous avons au cours de ce chapitre d\'etach\'e la
+notion de m\'ethode de l'objet ``patch''
+pour pouvoir l'appliquer \`a tous les types d'objets. Nous fournissons
+pour la conv\'enience des fonctions de manipulation de m\'ethodes pour
+les patches et les patchworks mais il est vraiement tr\`es simples
+de les adapter \`a d'autres types de donn\'ees.\\
+
+L'application aussi bien que le noyau ou les patches peuvent tous
+d\'efinir des m\'ethodes sur des objets, et les appeller ce qui permet
+une adaptation ph\'enom\'enale de Patchwork13! \`a tous les probl\`emes,
+et cela sans avoir \`a modifier les objets, les librairies ni les
+programmes qui ne sont pas concern\'es par telle ou telle application.

@@ -1,0 +1,49 @@
+\chapter{Noyau}
+
+Le noyau est une librairie permettant d'instancier et connecter
+des patches, et de faire avancer les donn\'ees dans ceux-ci.
+
+\section{Gestion des donn\'ees}
+\label{noyau_donnees}
+
+La gestion des donn\'ees actuelle permet pouvoir connaitre la taille des 
+donn\'ees et  g\'erer les tableaux.
+On distinguera donc un bloc de donn\'ees d'un segment de donn\'ees.\\
+
+Un bloc de donn\'ees est en fait une union de la taille d'un int (32 bits)
+o\`u l'on peut donc mettre 4 {\tt char}, 2 {\tt short} ou 1 {\tt long},
+ sign\'es ou non.
+L'union incluait pr\'ec\'edemment un {\tt long long} qui amenait la taile
+\`a 64 bits, taille moins adapt\'ee aux processeurs actuels. Nous avons donc
+supprim\'e ce champ, puisqu'il est possible de g\'erer des segments de plus
+d'un bloc.\\
+
+Un segment de donn\'ees est un tableau de blocs.
+Le premier bloc indique le nombre de blocs suivants,
+donc si le nombre de blocs est z\'ero le segment comporte un seul bloc,
+si le nombre de blocs est 1, le segment contient 2 blocs au total.\\
+
+Cela nous permet de g\'erer des tableaux ainsi que des types structur\'es
+plus complexes. Auparavant il \'etait possible de metre un pointeur
+dans l'union mais du coup il \'etait impossible de connaitre
+la taille des donn\'ees point\'ees.\\
+
+Il \'etait n\'ecessaire de connaitre la taille des donn\'ees pour le cluster,
+car celui-ci devra transferer des donn\'ees d'un ordinateur
+\`a l'autre. Cela pourra \'egalement servir \`a s\'erialiser les donn\'ees
+dans un flux et \`a les lire, sans avoir a faire une fonction pour chaque
+type de donn\'ees.\\
+
+Nous avons donc du mettre \`a jour la librairie des patchs standard
+pour qu'elle utilise les nouveaux types de don\'ees, c'est \`a dire r\'ecrire
+toutes les macros pour chaque type (float, int, {\em etc.}), et adapter
+chaque patch pour qu'ils utilisent correctement les nouvelles macros.\\
+
+\newpage
+
+Cette nouvelle gestion des donn\'ees a donc demand\'e du travail,
+mais donne beaucoup plus de puissance et de possibilit\'es puisque
+l'on connait et qu'on peut faire varier leur taille, y mettre un tableau
+ou m\^eme une structure. \\
+Cette nouvelle m\'ethode ressemble beaucoup \`a la gestion
+des variables dans Objective CAML, r\'ef\'erence s\^ure.\\

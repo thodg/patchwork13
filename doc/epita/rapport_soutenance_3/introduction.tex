@@ -1,0 +1,54 @@
+\chapter{Introduction}
+
+Voici venue la troisi\`eme soutenance de {\bf Patchwork13!},
+notre puissant outil
+de synth\`ese modulaire. Rappellons bri\'evement le but du projet :
+permettre la g\'en\'eration et la manipulation de donn\'ees en
+temps r\'eel par la connection de {\em plug-ins} que nous appellons des
+{\bf patches}, cela tr\`es simplement et \`a la souris.\\
+
+Nous d\'eveloppons \'egalement un syst\`eme de clustering pour r\'epartir
+les patches sur diff\'erentes machines afin de multiplier les performances,
+cela sans m\^eme que l'utilisateur aie \`a configurer quoi que ce soit \`a
+part lancer le {\em daemon} sur les machines qu'il souhaite utiliser.
+Le but est qu'en tirant des fleches \`a la souris, l'utilisateur controle
+de mani\`ere transparente tout les serveurs.\\
+\\
+
+\section{Planning}
+Notre planing a \'et\'e largement respect\'e tant au niveau du cluster que 
+de l'interface, des patches SDL et l'OpenGL et des patchs son. Cela a
+\'et\'e facilit\'e par l'avance que nous avions prise par exemple sur les
+patches OpenGL, mais aussi compliqu\'e par les nouvelle fonctionnalit\'es
+que nous avons rajout\'ees en plus de celles d\'ecrites dans notre cahier des
+charges. Cela comprend l'exportation et l'importation dans des fichiers XML
+et l'avanc\'ee majeure que repr\'esente la possibilit\'e d'associer aux
+patches des {\em m\'ethodes} qui leurs sont propres.\\
+
+De plus, l'enregistrement et du chargement des patchworks 
+permet de ne plus perdre de temps lorsqu'on veut reprendre
+un patchwork et/ou le modifier, apportant un grand confort
+d'utilisation, surtout pour les tests ce qui acc\'el\`ere
+fortement le d\'eveloppement.\\
+
+Concernant le cluster, l'impl\'ementation des messages r\'eseau que nous 
+avions pr\'evus est compl\`ete, ce qui permet \`a Patchwork13! d'\^etre
+compl\`etement utilisable \`a travers un r\'eseau TCP/IP.\\
+
+\newpage
+
+Pour la SDL, nous avons maintenant une sortie sons qui fonctionne parfaitement 
+et nous permet, coupl\'e avec les patchs sons cr\'ees, de pouvoir d\'ej\`a 
+produire un rendu sonore tr\`es satisfaisant.\\
+\\
+
+\section{Exp\'erience}
+
+Entre ces deux soutenances, beaucoup de travail a donc \'et\'e abattu.
+Certains ont d\'ecouvert le confort des salles machines du sous-sol
+Pasteur, dont la temp\'erature se pr\^ete tout \`a fait \`a un court
+mais r\'eparateur sommeil lorsque les joies de la programmation
+c\'edaient face aux charmes de Morph\'ee.\\
+
+Le ryhtme de travail est donc vraiement bien install\'e et il n'y a aucune
+raison pour que cela ne continue pas \`a s'am\'eliorer. 

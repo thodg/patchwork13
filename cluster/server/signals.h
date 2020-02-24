@@ -1,0 +1,9 @@
+#ifndef PW13_CLUSTER_SIGNAL_H_INCLUDED
+#define PW13_CLUSTER_SIGNAL_H_INCLUDED
+
+
+void server_signals ();
+
+
+#endif
+/* ndef PW13_CLUSTER_SIGNAL_H_INCLUDED */

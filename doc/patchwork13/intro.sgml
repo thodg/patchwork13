@@ -1,0 +1,36 @@
+  <chapter id="intro">
+    <title>Introduction</title>
+    <sect1 id="who-are-we">
+      <title>Who are we ?</title>
+      <para>
+        We are students building this project for fun, namely :
+      </para>
+      <para>Thomas de Grivel,
+            <email>billitch@yahoo.fr</email>,
+            student at EPITA, a French computer science school.</para>
+      <para>Julien Valentin,
+            <email>heros_hanatos@hotmail.com</email>,
+            student at EPITA.</para>
+      <para>Bruno Malaquin,
+            student at EPITA.</para>
+      <para>Maxime Louchart,
+      <email>maxime.louchart@gmail.com</email>
+            student at EPITA.</para>
+      <para>Maxime Berthou,
+            physics student.</para>
+      <para>Vivien Ravet,
+            student at the EFREI, a French computer science school.</para>
+    </sect1>
+    <sect1 id="what-is-this">
+      <title>What is this document about ?</title>
+      <para>
+        This document aims to give first time users a glimpse
+	of what Patchwork13! can do.
+      </para>
+    </sect1>
+    <sect1 id="what-is-patchwork13">
+      <title>What is Patchwork13! ?</title>
+      <para>Patchwork13! is a portable functional synthesis toolkit.</para>
+      <para></para>
+    </sect1>
+  </chapter>

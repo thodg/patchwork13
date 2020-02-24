@@ -1,0 +1,58 @@
+AC_INIT([Patchwork13! Cluster],[0.1],[billitch@sf.net],[pw13_cluster])
+AC_CONFIG_SRCDIR(server/server.c)
+AM_INIT_AUTOMAKE([pw13_cluster],[0.1])
+
+AC_CANONICAL_HOST
+
+AC_MSG_CHECKING([for native Win32])
+case "$host" in
+  *-*-mingw*)
+    if test `uname -s` != Linux; then
+      os_win32=yes
+      AC_DEFINE(WIN32)
+    fi
+    ;;
+  *)
+    os_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$os_win32])
+AM_CONDITIONAL(OS_WIN32, test "$os_win32" = "yes")
+if test "$os_win32" = "yes"; then
+ if test x$enable_static = xyes -o x$enable_static = x; then
+   AC_MSG_WARN([Disabling static library build, must build as DLL on Windows.])
+   enable_static=no
+ fi
+ if test x$enable_shared = xno; then
+   AC_MSG_WARN([Enabling shared library build, must build as DLL on Windows.])
+ fi
+ enable_shared=yes
+fi
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+
+PKG_CHECK_MODULES(pw13, libpw13-0)
+PW13_CFLAGS="$pw13_CFLAGS"
+PW13_LIBS="$pw13_LIBS"
+AC_SUBST(PW13_CFLAGS)
+AC_SUBST(PW13_LIBS)
+
+AC_MSG_CHECKING([if we want debugging])
+AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Activate debugging]),
+	      [], [debug=yes])
+if test $debug = 'yes'; then
+  export CFLAGS='-O0 -g'
+fi
+AC_MSG_RESULT([$debug])
+
+AC_OUTPUT([
+	Makefile
+	common/Makefile
+	server/Makefile
+	client/Makefile
+	libpw13_cluster_c-0.pc
+])

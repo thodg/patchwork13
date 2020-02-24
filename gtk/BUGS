@@ -1,0 +1,5 @@
+BUGS in pw13_gtk
+
+	* Checkbox not unchecked when disconnected.
+
+	* Segfault at exit !

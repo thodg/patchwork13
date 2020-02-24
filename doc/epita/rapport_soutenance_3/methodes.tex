@@ -1,0 +1,52 @@
+\chapter{M\'ethodes et fonctions de rappel}
+
+\section{Introduction}
+
+Pour pouvoir ajouter des fonctions sp\'ecifiques \`a une application
+ou \`a quelques patches, nous avons introduit le concept de
+{\bf methode de patch}. C'est une fonction li\'ee \`a un patch et
+identifi\'ee par une chaine de charact\`eres.
+La librairie noyau de Patchwork13! dispose d\'esormais de fonctions
+d'ajout d'une m\'ethode \`a un patch, de suppression et d'appel.\\
+\\
+
+\section{Avantages}
+
+Un des atouts majeurs de notre mani\`ere de g\'erer ces m\'ethodes
+est que l'on peut associer plusieurs fonctions \`a un m\^eme nom.
+L'appel de la m\'ethode consiste alors \`a appeller successivement
+toutes les m\'ethodes associ\'ees au m\^eme nom de m\'ethode.
+Nous avons donc pour chaque patch une liste chain\'ee de noms de m\'ethodes,
+chaqun contenant une liste chain\'ee de pointeurs de fonctions.\\
+\\
+Ces fonctions sont donc des {\em fonctions de rappel} et l'on peut ainsi
+associer diff\'erentes fonctions \`a diff\'erents patches et ces
+fonctions seront appell\'ees lors d\'evenements d\'efinis par
+ l\'application.\\
+\\
+
+\section{Exemple}
+
+Par exemple, dans l'interface graphique nous appellons la methode
+nomm\'ee {\tt ``gtk build interface''} sur chaque patch lors de sa cr\'eation
+pour qu'il puisse \'eventuellement cr\'eer ses contr\^oles.
+Si le patch n'a pas associ\'e de fonction de rappel pour ce nom de 
+m\'ethode, alors il ne se passe rien. Si il a d\'efini une (ou plusieurs)
+fonctions pour cette m\'ethode alors elles sont appell\'ees avec en
+param\`etre le {\em widget} GTK parent pour que le patch cr\'ee ses controles
+dedans.\\
+\\
+Nous utilisons aussi des m\'ethodes pour g\'erer l'enregistrement
+et le chargement d'informations propres au patch.\\
+\\
+
+\section{G\'en\'eralisation}
+
+Dans le chapitre suivant nous d\'ecrivons en d\'etail 
+comment nous avons \'et\'e amen\'es \`a {\bf g\'en\'eraliser}
+cette notion de m\'ethode pour pouvoir
+\'egalement l'appliquer \`a un patchwork (un graphe de patches).
+Nous n'utilisons pour l'instant que des m\'ethodes sur les patchs et sur
+les patchworks mais le programmeur peut utiliser nos fonctions pour
+d\'efinir des m\'ethodes sur d'autres objets et utiliser toutes les
+fonctionnalit\'es d\'ecrites plus haut.

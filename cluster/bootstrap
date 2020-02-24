@@ -1,0 +1,18 @@
+#!/bin/sh
+
+display_and_run() {
+    echo $*
+    $* || exit 1
+}
+
+if test -x "`which libtoolize`"; then
+    display_and_run libtoolize -c -f
+elif test -x "`which glibtoolize`"; then
+    display_and_run glibtoolize -c -f
+else
+    echo "libtoolize not found !"
+    exit 1
+fi
+display_and_run aclocal
+display_and_run autoconf
+display_and_run automake --add-missing -c

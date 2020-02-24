@@ -1,0 +1,31 @@
+\section{Exemple de nouveau type : Vect4f}
+
+\`A la base nous avons cr\'e\'e ce type pour l'OpenGL, afin de
+contenir les coordonn\'ees d'un vecteur pour la 3D.
+Gr\^ace au type de base d\'ej\`a existant et en les
+adaptant on peut facilement en inventer.\\
+
+Par exemple pour vect4f on cr\'e\'e un dossier avec un
+petit header dedans contenant des {\tt \#define} pour
+d\'efinir les nouveaux input et output mais aussi
+sp\'ecialement ici une fonction lui permettant de faire
+une variable facilement tout en la remplissant.
+Bien s\^ur ensuite une multitude de patches accompagne
+ce type pour lui faire faire les fonctions courrantes
+telles que addition, soustraction, constante, affichage.\\
+
+\subsection{le type}
+Pour ce type on voulait avoir un tableau statique de 4 cases
+m\'emoires. Pour que se fasse, on utilise une fonction se trouvant
+dans le noyau du projet qui initialise un tableau (de 4 cases, logique)
+et on le remplis avec des \'el\'ement g\'en\'eriques pris en
+param\^etres que l'on caste avec l'union contenant tous les
+types tr\`es simples. \\
+
+\subsection{les patchs d\'ependants}
+Les patchs sont g\'er\'es comme les autres avec la fonction
+``pump'' et ``init''.
+Le type \'etant un peu plus complexe pour cet exemple,
+il a fallu ajouter des ``defines'' au types pour ais\'ement
+manipuler les donn\'ees de chaque case m\'emoire
+dans les inputs et outputs.\\

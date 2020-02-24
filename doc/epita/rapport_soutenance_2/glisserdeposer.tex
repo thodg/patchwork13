@@ -1,0 +1,45 @@
+\section{Glisser - d\'eposer}
+
+Toutes ces op\'erations peuvent en fait se rapporter \`a des
+glisser - d\'eposer ({\em drag and drop} en anglais). Nous avons donc
+fait grand usage de la m\'ethode fournie par GTK pour effectuer des
+glisser - d\'eposer. Malheureusement cette m\'ethode est tr\`es tr\`es
+(tr\`es) mal document\'ee (contrairement au reste de GTK) et il a fallu
+avancer \`a t\^atons, d'autant plus que la m\'ethode est assez complexe
+et implique d'utiliser plusieurs signaux pour communiquer entre le widget
+source et le widget d'arriv\'ee.\\
+
+Pourtant, une fois le fonctionnement apr\'ehend\'e, la methode est
+tr\`es efficace. C'est pour cela qu'elle \`a \'et\'e choisie pour
+effectuer les trois op\'erations suivantes :\\
+
+
+\subsection{Cr\'eation d'un patch}
+On peut cr\'eer un patch en le prenant \`a la souris dans l'arbre
+de la fen\^etre principale, et en le d\'eposant dans le fen\^etre
+d'un patchwork. La liaison avec la fonction du noyau pour cr\'eer
+un patch est faite, la cr\'eation d'un patch dans l'interface graphique
+et dans le noyau est faite simultan\'ement.\\
+
+La cr\'eation du widget d'un patch est faite via un fichier glade
+qui contient ce qui est commun \`a tous les paches. Il faut ensuite
+appliquer le nom du patch et cr\'eer les widgets correspondant aux
+entr\'ees et aux sorties du patch cr\'e\'e.\\
+
+\newpage
+
+\subsection{D\'eplacement d'un patch}
+Le d\'eplacement d'un patch dans le patchwork se fait lui aussi via un
+glisser - d\'eposer depuis le nom du patch, en restant dans la fen\^etre
+du patchwork. On r\'ecupere ainsi la nouvelle position du patch,
+que l'on d\'eplace. On enregistre la position du patch car on en a besoin
+pour dessiner les fl\`eches qui relient les patches entre eux.\\
+
+\subsection{Connection des patches}
+La connection d'une sortie d'un patch se fait en la tirant \`a la souris
+jusqu'\`a une entr\'ee d'un autre patch. La connection v\'erifie
+si les type de donn\'ees sont compatibles, si les patches ne sont pas
+d\'ej\`a connect\'es et si tout est valide effectue la connection.
+On enregistre alors la connection dans une liste cha\^in\'ee, pour
+pouvoir afficher, detruire ou effectuer d'autres actions
+sur les connections.\\

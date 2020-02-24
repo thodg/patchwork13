@@ -1,0 +1,98 @@
+\section{OpenGL}
+
+\subsection{Pr\'esentation g\'en\'erale}
+
+La partie OpenGl du projet permettra aux utilisateurs d'avoir des patchs
+ de base leur permettant de faire de la 3d sans se prendre la t\^ete. Bien
+ \'evidement l'openGl est roi dans ce domaine et surtout en accord avec notre projet qui doit rester portable.  Pour les m\^emes raisons nous avons
+ choisi d'utiliser la SDL pour accompagner l'impl\'ementation de l'OpenGl. 
+C'est une librairie multi-plateforme permettant de manipuler pas mal de choses
+ qui pourrait \^etre utile dans Patchwork13 plus tard (acc\'es au clavier, 
+souris, son, joystick).
+	
+\subsection{Fonctionnement et D\'emarrage}
+
+Il a fallu d\'ecouper les possibilit\'ees d'OpenGl sous forme de patchs 
+disponible par la suite. Toutes les fonctionalit\'ees n'ont pas \'et\'e 
+transcrites pour simplifier le travail et aussi sans en faire pour que ce
+ soit inutile, OpenGl va tr\`es loin d\'un point de  vue technologique (Vertex Shader, 
+Volumetric Frog, \ldots). Seuls des patchs de base ont donc \'et\'e impl\'ement\'e 
+ce qui reste suffisant pour faire de la 3D correcte tout de m\^eme. Pour 
+impl\'ementer en patch les diverses capacit\'es j'ai dû comprendre comment 
+marcher le noyau du projet puis l'\'ecriture de patch pour cela j'ai \'ecrit 
+dans la librairie standard un petit patch permettant de faire le calcul d'une 
+puissance positive et n\'egative, j'ai beaucoup appris sur ce simple exemple. 
+Ensuite je me suis donc logiquement int\'eress\'e au manniement de l'OpenGl pour 
+cela j'ai lu les tutorials de Nehe (http://nehe.gamedev.net) à un stade un peu 
+plus avanc\'es de ce que je pensais  faire pour mieux analyser la librairie et ne 
+pas bloquer l'int\'egration d'\'el\'ements futurs dans le logiciel,  faute de 
+mauvaise structure. Apr\`es avoir r\'ealis\'e \c{c}a j'ai pu rapidement tout transcire.
+
+\subsection{Patch Opengl}
+\subsubsection{Surface}
+
+J'ai commenc\'e par faire l'initialisation de la surface avec toutes les 
+lignes de codes que cela implique. Au passage j'y ai int\'egr\'e les 
+param\^etres me permettant pour plus tard d'utiliser les fonctionalit\'es 
+que je voulais. L'initialisation de la surface OpenGl se fait \`a partir 
+d'un \^ev\'enement ``start''. Puis l'enchainement des fonctions et des
+ param\^etres se d\'eclenchent : SDL\_init, param\^etrage de la video,
+ initialisation de la surface, redimensionage de la fene\^tre et
+ d\'eclenchement 
+de la boucle d'affichage. Dans la boucle il y a une fonction 
+permettant de savoir si l'utilisateur \`a appuy\'e sur les touches ``Escape'' 
+ou ``F'' pour soit quitter le programme soit mettre la fen\^etre OpenGl 
+en ``Plein Ecran'' ou pas (respectivement). Le ``pump'' du patch permet 
+juste de faire un swap des buffers de rendu openGL.
+
+\subsubsection{Forme et d\'eplacement}
+Ensuite j'ai cod\'e les patchs triangle et quad prenant en param\^etre un 
+entier indiquant leur taille simplement ensuite je fait un
+``glBegin(GL\_TRIANGLES)'' ou ``glBegin(GL\_QUAD)'' et
+j'obtiens une forme pla\c{c}ant les points en fonction
+de la taille. Pour pouvoir placer ces triangles o\`u l'on veut j'ai cod\'e un
+patch permettant de translater, soit il prend en param\^etre, x, y et z, lui
+permettant de se d\'eplacer l\'a o\`u l'on veut puis hop on dessine sa forme
+on se red\'eplace et paf encore une autre forme. Parfait mais il faut ensuite 
+inclure la notion de 3d dans tout \c{c}a.
+Le patch rotation est l\`a pour \c{c}a,
+il prend en param\^etre l'angle plus l'axe de rotation
+avec x, y, z. Par exemple
+si on veut faire une rotation du  haut vers le bas on va l\'appeler avec les z
+positif et le reste  a z\'eros sauf l'angle bien s\^ur. A partir de \c{c}a on
+peut cr\'eer des formes en 3d en calant bien comme il faut les facettes des
+objets (cubes, pyramides,\ldots). Un autre petit patch dans le m\^eme style
+est l\`a aussi pour remettre ``la vue'' au point z\'eros.
+
+
+\subsubsection{Attrayance : Couleur, Transparence, Lumi\'eres et Textures}
+
+Voil\`a c'est d\'ej\`a bien mais on peut rendre cela plus attrayant avec de
+ la couleur et de la transparence par exemple. En faite \c{c}a se passe un
+ peu comme si on modifait une variable globale qui serait la couleur courante.
+ Le patch prend en param\^etre les entr\'ees de la fonction qui sera appell\'e
+ pour modifier cette variable locale soit \`a la norme du rgb, donc le rouge,
+ vert et bleue en floatant, j'ai ajout\'e un param\^etre alpha pour la
+ transparence donc sans avoir la possibilit\'e de faire sans. Le patch sera
+ donc lanc\'e avec alpha \`a 1 si on veut une application de la couleur opaque.\\
+
+Comme autre ``gadget'', j'ai impl\'ement\'e une lumiere globale. On lui passe 
+juste sa position (x,y,z). Je dis globale parce que l'on peut qu\'en mettre une, 
+de plus les normales des faces n'ont pas \'et\'e impl\'ement\'ees donc la lumiere 
+se r\'eparti un peu n'importe comment sur les faces\ldots \\
+
+Pour texturer les diverses faces, il y a plusieurs fa\c{c}ons. Pour rendre cela 
+plus souple pour les utilisateurs du logiciel, nous avons d\'ecid\'e de traiter 
+les textures comme des surfaces que l'on collerait donc sur les facettes des
+ formes que l'ont cr\'ee. A partir d'un ``start'' du patch on charge la texture
+ propre au patch (soit il faut lancer un patch par texture) dans une variable \`a
+ partir d'une image qu'on donne en param\^etre au patch. Puis il faut d\'efinir
+ des vecteurs pour cadrer la pose. Pour que se fasse j'ai cr\'e un type vect4f(x,y,z, profondeur)
+ permettant de simplifier le proc\'ed\'e de param\^etrage. Comme on applique un plan
+ il y a 2 vecteurs un pour les abcisses l'autre les ordonn\'ees. Donc
+ pour l'utiliser on applique une rotation tout pareil que la facette que l'on va
+ cr\'e\'e et on appelle ce patch qui en pompant va s\'electionner la texture
+ en m\'emoire et l'appliquer telle un r\'etroprojecteur. Voil\`a donc un
+ avec ces petits patchs on peut d\'ej\`a faire une structure complexe
+ textur\'ee qui bouge et qui soit transparente par exemple, soit une r\'ealisation
+ sympathique pour une d\'emo avec de la musique techno...

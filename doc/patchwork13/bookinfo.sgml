@@ -1,0 +1,23 @@
+<bookinfo>
+    <date>2006-06-14</date>
+    <title>An introduction to Patchwork13!</title>
+    <abbrev>Patchwork13!</abbrev>
+    <subtitle>The free functional synthesis toolkit</subtitle>
+    <releaseinfo>1.0</releaseinfo>
+    <authorgroup>
+      <author>
+	<firstname>Thomas</firstname>
+	<othername>"billitch"</othername>
+	<surname>de Grivel</surname>
+      </author>
+    </authorgroup>
+    <address><email>billitch@yahoo.fr</email></address>
+    <copyright>
+      <year>2006</year>
+      <holder>Thomas de Grivel</holder>
+    </copyright>
+    <legalnotice><para>
+      This document can be freely redistributed according to the terms
+      of the GNU General Public License.</para>
+    </legalnotice>
+ </bookinfo>

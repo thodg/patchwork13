@@ -1,0 +1,62 @@
+\newpage
+\section{Affichage}
+
+\subsection{Le Patchwork}
+\par
+L'affichage du patchwork a chang\'e\ldots 
+\\
+En effet, un contexte graphique a \'et\'e ins\'er\'e. Il est cr\'e\'e grace \`a la lib cairo
+et nous permet de dessiner, d'afficher des fen\^etres, et de pouvoir conna\^itre les 
+caracteristiques de chacun par rapport aux autres. On peut toujour voir apparaitre 
+la barre de contr\^ole permetant de demarrer, mettre en pause, arr\^eter un patchwork. 
+Ces fonction sont limit\'ees \`a tester si les procedures des patches sont 
+correctement execut\'ees.
+\\
+
+\subsection{Cairo et GTK}
+\par
+La derni\`ere version de Cairo, est ins\'er\'e\'e dans GTK. C'est \`a dire que la lib est 
+directement g\'er\'ee par GTK. Mais afin de pouvoir profiter de ces avanc\'ees 
+technologiques, il nous a fallu aqu\'erir la derni\`ere version de GTK. Les classiques 
+'emerge' ou 'apt-get' de linux nous le permet, mais sous mac os x, c'est diff\'erent. 
+En effet, l'installation de 'fink' (similaire a 'apt-get') n'a pas suffit, il nous 
+a fallut installer 'darwinport' pour pouvoir b\'en\'eficier d'une version assez recente.
+L'affichage est \`a present pr\'esent sur mac os x et linux. le probl\`eme \'etant resolu, 
+on peut desormais jouir d'un bel affichage muti-os.
+\newpage
+\subsection{Les Patchs}
+\par
+Les patches sont enfin aparus ! H\'e oui, on peut voir maintenant appara\^itre les patchs 
+et leurs contenus dans la fenetre du patchwork. On peut m\^eme la faire glisser de la 
+liste des patches dans le patchwork gr\^ace au drag \& drop. 
+\\
+\par
+La fen\^etre du patch est compos\'ee de plusieurs parties :
+
+\begin{itemize}
+\item Le titre
+  \\
+  Boite contenant le nom du patch.
+\item Les entr\'ees / sorties
+  \\
+  Cr\'ees dynamiquement \`a la cr\'eation du patch dans le patchwork. Les checkbox 
+  repr\'esentant les entr\'ees et les sorties sont li\'es \`a leur nom et une sortie 
+  est reliable \`a une entr\'ee \`a la souris gr\^ace au drag \& drop.
+\end{itemize}
+
+\subsection{Les Pl\^eches}
+\par
+Les fl\`eches representent les liaisons entres les entr\'ees et les sorties des patches 
+d'un patchwork. Elles sont dessin\'ees lors d'un d\'eplacement ou d'un drag \& drop. 
+\\
+\par
+Afin de g\'erer l'affichage de toutes les fl\`eches, nous avons cr\'e\'e une liste 
+de connections entre deux patches. Elle est mise \`a jour \`a chaque nouvelle 
+connection et est parcourue quand on rafra\^ichi la fen\^etre du patchwork.
+\\
+\par
+Le placement des points de d\'epart et d'arriv\'ee n'a pas \'et\'e une mince 
+affaire. On a eu un petit probleme quant \`a la position de la checkbox dans sa boite, 
+les 
+insertions des checkbox \'etant dynamiques, on a du passer par des fonctions d'appel au parent et un certain 
+d\'ecalage est venu s'ajouter pour pouvoir enfin avoir des fleches bien cadr\'es.

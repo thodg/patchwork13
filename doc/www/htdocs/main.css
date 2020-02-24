@@ -1,0 +1,39 @@
+
+body,td,th {
+	font-family: arial, helvetica, sans-serif; 
+	font-size: 15px;
+}
+
+body {
+	margin: 2%;
+	color: #000000;
+	background-color: #ffffff;
+}
+
+a {
+	text-decoration: none;
+	color: #FF8822;
+	font-weight: bold;
+}
+
+.menu {
+	font-size: large;
+}
+
+pre {
+	color: #3328FF;
+}
+
+.prop {
+	font-size: small;
+	color: #CCCCCC;
+}
+
+.newsdate {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+div {
+	margin: 5%;
+}

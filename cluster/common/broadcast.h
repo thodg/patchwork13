@@ -1,0 +1,10 @@
+#ifndef PW13_BROADCAST_H_INCLUDED
+#define PW13_BROADCAST_H_INCLUDED 1
+
+#define PW13_BROADCAST_SERVER_PORT 7185
+#define PW13_BROADCAST_CLIENT_PORT 7186
+
+char * nieme_str (char *str, int n);
+
+#endif
+/* ndef PW13_BROADCAST_H_INCLUDED */

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+LIBNAME=sdl
+
+LIBS=$(grep -E '^PW13_LIBS' Makefile.am | awk -F '=' '{print $2}')
+
+SRCDIR=${PWD}
+if test -x ${PWD}/../pw13-makefile-am; then
+    PW13_MAKEFILE_AM=${PWD}/../pw13-makefile-am
+else
+    PW13_MAKEFILE_AM=pw13-makefile-am
+fi
+
+for L in ${LIBS}; do
+    if [ "$1" = "-f" ] || [ "$2" = "-f" ]; then
+	rm -f ${SRCDIR}/$L/Makefile.am ${SRCDIR}/$L/Makefile.in
+    fi
+    echo -n "Updating $L: "
+    cd ${SRCDIR}/$L && ${PW13_MAKEFILE_AM} ${LIBNAME} .. $L
+done
+
+exit 0

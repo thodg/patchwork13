@@ -1,0 +1,78 @@
+AC_INIT([Patchwork13! GTK+ User Interface],[0.1],[billitch@sf.net],[pw13_gtk])
+AC_CONFIG_SRCDIR(src/main.c)
+AM_INIT_AUTOMAKE([gnu dist-bzip2])
+
+AC_CANONICAL_HOST
+
+AC_MSG_CHECKING([for native Win32])
+case "$host" in
+  *-*-mingw*)
+    if test `uname -s` != Linux; then
+      os_win32=yes
+      AC_DEFINE(WIN32)
+    fi
+    ;;
+  *)
+    os_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$os_win32])
+AM_CONDITIONAL(OS_WIN32, test "$os_win32" = "yes")
+if test "$os_win32" = "yes"; then
+ if test x$enable_static = xyes -o x$enable_static = x; then
+   AC_MSG_WARN([Disabling static library build, must build as DLL on Windows.])
+   enable_static=no
+ fi
+ if test x$enable_shared = xno; then
+   AC_MSG_WARN([Enabling shared library build, must build as DLL on Windows.])
+ fi
+ enable_shared=yes
+fi
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+
+PKG_CHECK_MODULES(gthread2, gthread-2.0)
+PKG_CHECK_MODULES(gtk2, gtk+-2.0)
+PKG_CHECK_MODULES(libglade2, libglade-2.0)
+PKG_CHECK_MODULES(cairo, cairo)
+PKG_CHECK_MODULES(pw13, libpw13-0)
+PKG_CHECK_MODULES(pw13_cluster, libpw13_cluster_c-0)
+
+PKG_CHECK_MODULES(PC,
+	gthread-2.0
+	gtk+-2.0
+	libglade-2.0
+	cairo
+)
+PC_CFLAGS="$PC_CFLAGS $pw13_CFLAGS $pw13_cluster_CFLAGS"
+PC_LIBS="$PC_LIBS $pw13_LIBS $pw13_cluster_LIBS"
+AC_SUBST(PC_CFLAGS)
+AC_SUBST(PC_LIBS)
+
+pw13_datadir=${datadir}/pw13-0
+AC_SUBST(pw13_datadir)
+
+PW13_CFLAGS=${PC_CFLAGS}
+PW13_LIBS=${PC_LIBS}
+AC_SUBST(PW13_CFLAGS)
+AC_SUBST(PW13_LIBS)
+
+AC_MSG_CHECKING([if we want debugging])
+AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Activate debugging]),
+	      [], [debug=yes])
+if test $debug = 'yes'; then
+  export CFLAGS='-W -Wall -O0 -g'
+fi
+AC_MSG_RESULT([$debug])
+
+AC_OUTPUT([
+	Makefile
+	data/Makefile
+	src/Makefile
+
+	const/Makefile
+	displays/Makefile
+	time/Makefile
+])

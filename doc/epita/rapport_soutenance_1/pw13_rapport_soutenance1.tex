@@ -1,0 +1,721 @@
+\documentclass[14pt,a4paper]{report}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+
+\begin{document}
+
+\begin{center}
+\rule{0cm}{19mm} \\
+
+{\Huge \textbf{Rapport de Soutenance n$^o$1}} \\[23mm]
+
+{\huge 2B2S} \\[8mm]
+
+Thomas 'billich' De Grivel \\
+Maxime 'loucha\_m' Louchart \\
+Bruno 'Broen' Malaquin \\
+Julien 'Splin' Valentin \\[32mm]
+
+\centerline{{\includegraphics{patchwork13.jpg}}}
+
+\end{center}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+
+
+\chapter{Introduction}
+
+Voici donc venue la premi\`ere soutenance du projet Patchwork13!
+
+Cet outil de synthe\`ese modulaire coupl\'e avec un cluster qui a pour
+but ultime d'offrir \`a un utilisateur lambda la possibilit\'e d'effectuer
+un nombre irtuellement illimit\'e de fonctions complexes
+\'eventuellement sans avoir
+la moindre notion de programmation.
+
+Le projet reprend un projet open source sous license GNU qui a
+d\'emarr\'e l'ann\'ee derni\`ere. Il n'\'etait encore qu'a
+l'\'etat d'embryon lorsque nous avons repris le d\'eveloppement
+du projet. \\
+
+Bien que la plupart des fonctions de base du noyau \'etaient
+d\'ej\`a fonctionnelles, le projet ne pr\'esentait aucun
+signe de fonctionnement visible a part
+un executable en mode console affichant une \'etrange serie de
+nombres (un sinus ?) et une compilation sans erreurs\ldots \\
+
+Les choses ont bien chang\'ees depuis puisque le projet s'est
+vu dot\'e de deux aspects compl\`etement nouveaux
+(bien que pr\'evus) : \\
+
+Nous avons d\'esormais une {\bf interface graphique} qui permettra d'utiliser
+la librairie gr\^ace \`a la souris. Elle pr\'esente d\'eja plusieur
+fen\^etres et permet de voir les patches (plug-ins) install\'es sur
+le syst\^eme sous forme d'arborescence. \\
+
+Ind\'ependemment de cela, un syst\`eme de {\bf cluster} a \'et\'e
+largement entam\'e et dispose d\'ej\`a de fonctions r\'eseau comme
+la d\'etection des serveurs disponibles sur le r\'eseau local
+et l'envoi de messages texte.
+
+Ce cluster permettra d'avoir en toute simplicit\'e la puissance de
+centaines de machines \`a la port\'ee d'une banale souris et d'un
+esprit cr\'eatif, m\^eme s celui-ci n'a aucune id\'ee du fonctionnement
+des machines.\\
+
+Nous vous pr\'esentons plus en d\'etail dans les pages qui suivent
+l'ensemble de ce que nous avons realis\'e depuis le 18 novembre,
+ainsi que le travail pr\'evu pour la prochaine
+soutenance, et ce pour chaque partie du projet.
+
+Commen\c{c}ons par la plus ancienne, qui se cache tout juste
+deri\`ere cette page.
+
+
+\chapter{Le noyau ({\bf pw13})}
+
+\section{Ce qui a \'et\'e fait}
+
+Toutes les fonctions du noyau (une trentaine) ont \'et\'e
+renomm\'ees pour respecter les normes
+des librairies : tous les symboles export\'es ont \'et\'es pre\'efix\'es
+par ``{\tt pw13\_}'' pour ne pas faire de conflit avec les programmes qui
+utiliseront la librairie. \\
+
+La portabilit\'e sous Windows est d\'esormais compl\`ete, le noyau se
+compile avec {\tt gcc} sous MinGW/MSYS (et non cygwin) ce qui donne donc du
+code windows {\bf natif} (pas de librarie ou de license suppl\'ementaire
+\`a inclure avec le programme).
+
+Nous obtenons donc actuellemnt une DLL parfaitement utilisable sous Win32,
+ce qui est une op\'eration autrement plus complexe que de compiler
+une librairie sous UNIX, et qui pose des
+contraintes tr\`es strictes sur la mani\`ere de compiler. \\
+
+Le d\'eveloppment ayant d\'emarr\'e sous Gentoo/Linux, le portage
+sous Debian et BSD n'a pos\'e aucun probl\`eme, et
+MacOS X est totalement support\'e lorsque Fink ou DarwinPorts sont
+install\'es. \\
+
+\section{Pour la prochaine soutenance}
+
+Le travail sur le noyau de Patchwork13! est \`a pr\'esent
+th\'eoriquement termin\'e, et il est plus que s\^ur
+que la version 0.1 {\it b\^eta} sera d\'eploy\'ee avant
+la prochaine soutenance.
+\\
+
+\chapter{Interface graphique}
+
+\section{Ce qui \`a \'et\'e fait}
+
+L'interface graphique GTK+2 de Patchwork13! s'appelle pw13\_gtk et
+est construite \`a l'aide de glade-2, une interface graphique de design
+d'interface graphique. Cela permet de se concentrer sur l'ergonomie et
+non sur les lignes de codes n\'ecessaire \`a la r\'ealisation d'une interface,
+exp\'erience que nous avons d\'ej\`a faite auparavant et que nous ne
+referons plus ! \\
+
+En plus de cela, nous utilisons libglade, une librairie qui permet de
+charger un fichier {\tt .glade} (le format de sauvegarde de glade,
+qui est en fait du xml) {\bf dynamiquement} pour cr\'eer l'interface
+graphique.
+
+Cela \'evite la r\'ebarbative proc\'edure standard qui est de laisser glade
+g\'enerer les sources du programme, ce qui oblige \`a recompiler le
+programme \`a chaque modification, aussi minime soit-elle, de l'interface.
+
+Avec libglade, il nous est arriv\'e de ne m\^eme pas avoir \`a fermer le
+programme pour observer les modifications apport\'ees aux bo\^ites de
+dialogues. Une fois modifi\'ee dans glade, il suffit de r\'e-ouvrir la
+bo\^ite de dialogue pour voir les changements.
+
+Cela est \'evidemment tr\`es pratique et permet de se concentrer sur les
+fonctionnait\'es de l'interface et de ne pas perdre de temps sur sa mise
+en oeuvre. \\
+
+\newpage
+
+\subsection{Bo\^ite \`a outils}
+
+La bo\^ite \`a outils est la fen\^etre principale du programme,
+elle permet d\'ej\`a de parcourir l'arborescence des patches
+install\'es sur le syst\`eme.
+
+Pour cela elle parcours r\'ecursivement le r\'epertoire des librairies
+de patches et affiche l'arborescence.\\
+
+
+On peut \'egalement gr\^ace au menu en haut de la fen\^etre :
+\begin{itemize}
+\item
+  Cr\'eer un nouveau patchwork, ce qui ouvre une nouvelle fen\^etre
+  de patchwork et ajoute son nom (unique) dans la liste des fen\^etres
+  (dans le menu ``View'').
+
+\item
+  Ouvrir une bo\^ite de dialogue pour charger un patchwork, qui
+  ouvre une fen\^etre de patchwork portant le nom du fichier.
+  Le chargement n'est pour l'instant pas support\'e puisqu'on ne peut
+  pas encore afficher les patches du patchwork (il faudra attendre
+  la prochaine soutenance ;)
+
+\item
+  Un menu {\it Fen\^etre} permet de mettre en avant une des
+  fen\^etres de patchwork ouvertes.
+
+\item
+  Changer les pr\'ef\'erences du cluster (changements que l'ont
+  peut \'eventuellement annuler si on s'est tromp\'e).
+  Les pr\'ef\'erences se r\'esument pour l'instant au chemin des
+  ex\'ecutables du cluster, et l'on peut cliquer sur un bouton pour
+  les s\'electionner {\it via} une classique bo\^ite de dialogue de
+  s\'election de fichier.
+
+\item
+  Afficher une fen\^etre avec la liste des serveurs du cluster,
+  que l'on peut rafraichir avec un bouton, cela \'evitant de saturer le
+  r\'eseau inutilement. Cette fonction utilise les fonctions du cluster,
+  la liaison entre l'interface et le cluster a donc d\'ej\`a commenc\'e.
+
+\item
+  Lancer un serveur sur la machine locale, le serveur lanc\'e
+  correspond \`a l'ex\'ecutable choisi dans les pr\'ef\'erences du
+  cluster.
+
+\item
+  Afficher une bo\^ite de dialogue ``\`A propos'', exercice simple
+  mais utile.
+
+\item
+  Quitter le programme, avec un message de confirmation. Cela
+  peut \'eviter de perdre un travail en cours par erreur.
+
+\end{itemize}
+\rule{0cm}{0cm} \\
+
+\subsection{Fen\^etre patchwork}
+
+Lorsqu'on cr\'ee un nouveau patchwork ou que l'on en charge un existant,
+une fen\^etre de patchwork s'ouvre. On peut mettre en avant une
+fen\^etre en cliquant sur l'\'el\'ement portant son nom dans le
+menu {\it Fen\^etre} pour la mettre en avant.
+De plus, quand on ferme la fen\^etre,
+l'\'el\'ement u menu est lui aussi retir\'e. \\
+
+La fen\^etre d'un patchwork est encore sommaire et pas tres interactive, mais 
+l'idee principale est install\'e. Nous pouvons voir des maintenant apparaitre 
+un block dans la partie superieur de la fenetre principale. Celle ci
+contiendra l'ensemble des patchs d'un patchwork avec les
+liaisons entre eux et leurs parametres interne. \\
+
+Dans la partie inferieure de la fenetre, on peu voir 
+un block divis\'e en plusieur parties. Ces parties sont reductibles \`a
+souhait. Elles contiennent, de droite a gauche, une zone ou l'on
+verra appara\^itre le 
+suivi du patchwork: messages d'information, erreurs\ldots  \\
+
+La deuxieme zone servira 
+\`a lancer le patchwork et contr\^oler pas \`a pas l'\'evolution du
+patchwork dans le temps.
+Une trackbar permet de voir l'avanc\'ee du patchwork et de se d\'eplacer
+dans son  \'evolution aussi bien au niveau du temps que des processus. \\
+
+Le dernier block est encore inutilis\'e mais nous permettra \`a 
+l'avenir de pouvoir afficher des proprietes supplementaires utiles \`a
+l'utilisation du patchwork ou des informations diverses. \\
+
+La barre de menu presente dans la partie sup\'erieure de la fen\^etre
+contient des bouttons n\'ecessaires et essentiels \`a la bonne
+utilisation du patchwork13. Mis a part les fonctions de base
+(open, save, quit..), l'affichage de fenetres annexes utiles.
+
+
+\newpage
+
+\section{Pour la prochaine soutenance}
+
+Nous avons pu nous familiariser avec les outils parmi les plus efficaces
+pour cr\'eer une interface graphique en cr\'eant des fen\^etres, 
+bo\^ites de dialogue, et en g\'erant les \'ev\`enements (ou signaux sous GTK+).
+\\
+
+Nous alons maintenant \^etre confront\'es \`a des probl\^emes plus ardus
+comme cr\'eer nos propres widgets (classes d'objets) et utiliser des plugins
+qui viennent d'\^etre cr\'ees pour GTK+, tels que cairo et graphviz. \\
+
+
+\subsection{Affichage du graphe}
+
+Nous pr\'evoyons d'utiliser la librairie {\bf graphviz} (qui est la
+r\'ef\'erence pour afficher un graphe) afin d'afficher notre graphe
+de patches.
+
+Nous nous sommes d\'ej\`a un peu renseign\'es sur les plugin GTK
+et cairo existant pour graphviz mais ceux-ci \'etant tr\`es
+r\'ecents sont encore tr\`es mal document\'es.
+
+Ceux-ci n'ont toutefois pas l'air tr\`es dynamiques, il nous faudra
+surement \'ecrire toutes les fonctions n\'ecessaire \`a l'interaction
+entre le graphe et l'utilisateur, via la souris et le clavier.
+\\
+
+\subsection{Widget patches}
+
+Nous allons devoir cr\'eer un nouveau widget GTK+ pour les patches.
+Il faut que l'on puisse y voir le nom et le type du patch ainsi que
+ceux de ses entr\'ees et sorties. On devrait aussi pouvoir
+masquer/afficher toutes ces informations en un clic pour ne pas
+encombrer l'espace de travail. \\
+
+Il faudra \'egalement permettre aux patches de pouvoir cr\'eer une
+interface GTK+ et ainsi d'interagir avec l'utilisateur.
+Il faudra pour cela que les patches ayant une interface graphique
+exportent une fonction pour cr\'eer l'interface et y connecter des signaux.
+
+\newpage
+
+\chapter{Maintenance et installation}
+
+La maintenance des r\'epertoires des sources est une t\^ache tr\`es
+importante au bon d\'eveloppement du projet, bien au del\`a d'une
+question de confort, la vitesse de d\'eveloppement du projet en
+d\'epend directement. \\
+
+Les facilit\'es d'installation sont pour l'instant r\'eduites au
+classique mais efficace \\
+\rule{1cm}{0cm}
+{\tt make install} \\
+
+Il est bien s\^ur pr\'evu d'avoir des programmes d'installation tr\`es
+accessibles pour les diff\'erentes plateformes support\'ees
+(Linux RPM, Debian DEB, Gentoo ebuild, MacOS X, Win32\ldots).
+\\
+
+\section{Ce qui a \'et\'e fait}
+
+Tous les programmes ont leur propre r\'epertoire o\`u les sources
+sont s\'epar\'es des fichiers n\'ecessaires \`a {\tt autoconf} et
+{\tt automake}.\\
+
+Ces deux programmes se sont impos\'es par leur grande notori\'et\'e
+et la facilit\'e de portage qu'ils offrent. Ils sont m\^eme disponibles
+pour Widows avec MinGW/MSYS ! \\
+
+Nous utilisons \'egalement {\tt libtool} pour compiler, lier et
+charger dynamiquement les librairies de mani\`ere portable. \\
+
+Ces trois programmes sont actuellement utilis\'es pour
+compiler chaque programme du projet et sont d'une tr\`es grande
+aide car nous n'avons eu presque aucun probl\`eme pour compiler sur
+diverses plateformes une fois la configuration bien faite. \\
+
+
+\newpage
+
+\subsection{Configuration}
+
+L'installation et la maintenance des programmes se fait gr\^ace \`a 
+autoconf et automake.
+
+Ces deux programmes permettent de g\'en\'erer a partir de peu d'instructions
+des Makefile complexes qui s'adaptent \`a toutes les plateformes UNIX,
+et m\^eme \`a Windows une fois dot\'e de MinGW et MSYS.\\
+
+La proc\'edure \`a suivre pour l'installation est la proc\'edure classique
+d'installation d'un package sous UNIX : \\
+{\tt
+
+  ./configure
+
+  make
+
+  make install
+
+}
+\rule{0cm}{0cm} \\
+
+Ainsi le noyau a \'et\'e compil\'e avec succ\`es sur les
+plateformes suivantes :
+\begin{itemize}
+\item{Gentoo Linux sur x86}
+\item{Gentoo Linux sur PowerPC}
+\item{MacOS X 10.4.2 (Darwin) sur PowerPC}
+\item{NetBSD sur x86}
+\item{Debian 3.0 sur x86}
+\item{Ubuntu (Breezy Badger) Linux sur x86}
+\item{Windows XP avec MinGW/MSYS sur x86}
+\end{itemize}
+\rule{0cm}{1mm} \\
+
+La librairie standard ainsi que l'interface graphique ont \'egalement
+\'et\'e compil\'ees avec succ\`es sur chacune de ces plateformes, \`a
+l'exception de Windows (MinGW/MSYS), qui n'est toutefois pas loin de
+fonctionner.
+
+Meme si elle repr\'esente un march\'e ph\'enomenal, 
+la plateforme n'a pas \'et\'e notre priorit\'e pour cette soutenance
+car il n'y a pas beaucoup de travail \`a fournir pour que
+la plateforme soit support\'ee
+mais nous concentrer pour l'instant sur UNIX nous a apport\'e
+une portabilit\'e tr\`es largement sup\'erieure. \\
+
+D'autre part il est beaucoup plus facile de porter un projet UNIX
+sous windows que de faire l'inverse, qui est m\^eme tout \`a fait
+inenvisageable. \\
+
+
+\newpage
+
+\subsection{CVS}
+
+La maintenance et le travail en \'equipe ont \'et\'e
+consid\'erablement simplifi\'es par
+l'utilisation de CVS (Concurrent Version System),
+qui permet d'enregistrer toutes les versions
+successives des fichiers du projet.
+
+Cela permet aussi de travailler beaucoup plus simplement \`a plusieurs
+sur un m\^eme projet, puisqu'on peut m\^eme (bien que cela ne soit pas
+recommand\'e) travailler \`a plusieurs sur un m\^eme fichier, CVS se
+chargeant de {\it m\'elanger } les deux et d'indiquer les \'eventuels
+conflits.\\
+
+CVS donne \'egalement une sensation de s\'ecurit\'e tr\`es encourageante
+car on ne risque pas de perdre un fichier ou de modifier irr\'emediablement
+un fichier puisque on peut \`a tout moment r\'ecup\'erer toutes les versions
+ pr\'ec\'edentes. \\
+
+La base CVS que nous utilisons est gracieusement
+(et gratuitement) h\'eberg\'ee par SourceForge.net
+que nous tenons donc \`a remercier tr\`es chaleureusement ! \\
+
+
+\section{Pour la prochaine soutenance}
+
+\subsection {Porter les programmes pour Win32}
+Nous pr\'evoyons de pouvoir compiler et lancer tous les programmes
+sous Win32 d'ici la prochaine soutenance.
+
+Le noyau est compl\`etement compatible avec Win32 et produit une DLL
+utilisable par d'autres programmes. \\
+
+C'est ce que nous devrons obtenir pour l'ensemble des patches de la
+librairie standard, o\`u chaque patch devra \^etre une DLL.
+C'est une op\'eration qui est loin d'\^etre \'evidente vu les contraintes
+impos\'ees pour compiler une DLL sous Wind0ws. \\
+
+Il reste actuellement des probl\^emes qu'il faudra r\'esoudre
+pour pouvoir compiler l'interface graphique avec GTK+. \\
+
+Il y aura certainement de petits changements a apporter aux
+fonctions r\'eseau du cluster, ainsi qu'\`a la mani\`ere de compiler
+puisque nous ne l'avons jamai compil\'e sous Win32. \\
+
+\chapter{SDL}
+\section{introduction a sdl}
+
+La librairie SDL a \'et\'e cr\'e\'ee afin de faciliter la programmation
+pour les jeux-videos.
+Nous allons l'utiliser ici afin de gerer les entr\'ees et sorties audio.
+ Pour l'instant la lecture d'un son via le patchwork n'est pas complete,
+ mais on sais d\'ej\`a comment utiliser cette librairie a bon escient.
+\\
+Nous savons \`a pr\'esent que le patch pour le son sera
+inclus au patchwork13 tres bientot.
+\\
+\\
+L'utilisation de la librairie SDL nous permettra par la suite d'afficher
+une fen\^etre OpenGL
+et l'utiliser dans un patch.
+On pourrai meme envisager d'utiliser SDL a des fin beaucoup plus optimiste.
+\\
+SDL est une librairie multi-OS et multi taches.
+Elle nous permettra donc, comme GTK+, de 
+porter le patchwork sur tous les systemes d'exploitation. ``Vive SDL''
+
+
+
+\chapter{Cluster}
+
+\section{Ce qui a \'et\'e fait}
+
+\subsection{Pr\'esentation g\'en\'erale et d\'efinition du cluster}
+
+Un cluster est un groupe de serveurs ind\'ependants fonctionnant comme un seul
+et m\^eme syst\`eme.
+
+Un client dialogue avec un cluster comme s'il s'agissait
+d'une machine unique. Ce syst\^eme permet donc d'augmenter consid\'erablement
+les performances lors du traitement d\'esir\'e. \\
+
+\subsection{Fonctionnement g\'en\'eral}
+
+Le cluster est divis\'e en deux parties :
+
+Un client, lanc\'e sur la machine sur laquelle on veut utiliser patchwork13, et
+ un nombre ind\'efini de serveurs qui sont l\`a pour faire les t\^aches de 
+traitement demand\'ees par le client. \\
+
+La communication entre le client et les servers s'effectue en deux temps :
+
+\begin{itemize}
+\item une identification en UDP
+\item Connection et \'emission en TCP
+\end{itemize}
+\rule{0cm}{0cm} \\
+
+\subsubsection{Identification}
+
+Le client poss\`ede une procedure effectuant un envoi de paquet sur 
+l'adresse de broadcast. Cette action est r\'ealisable depuis le bouton
+refresh de l'interface graphique.
+
+ Les serveurs en \'ecoute re\c{c}oivent
+donc le paquet \'emit par le client et renvoient un paquet, contenant
+entre autre le score du serveur, au client pour signaler leur
+pr\'esence.
+
+ Une fois le paquet  d'identification re\c{c}u,
+le client range le serveur dans une liste
+de servers  en fonction du score qu'il a transmis.
+D\`es lors l'identification est 
+termin\'ee pour les serveurs connect\'es.
+\\[1cm]
+
+\subsubsection{Connection et \'emission en TCP}
+
+Lors d'un refresh, le client parcourt la liste des serveurs \`a la recherche de
+serveurs non connect\'es en TCP.
+
+D\`es qu'un tel serveur est rep\'er\'e, le 
+client initialise avec lui une connection en TCP. A ce moment l\`a, le client 
+et le serveur sont compl\`etement op\'erationnels pour \'echanger toutes
+sortes de messages. \\
+
+
+\subsection{D\'etails des fonctions importantes}
+
+\subsubsection{Calcul du Score}
+
+Comme pr\'ecis\'e plus haut, le serveur envoie son score au client. Cette 
+fonction permet au client de classer les serveurs en fonction de leurs 
+performances.
+
+Ce score est obtenu par la multiplication du pourcentage d'utilisation du CPU 
+par sa puissance et de m\^eme pour la Ram, en plus clair :
+\\
+``score\_de\_la\_machine = (\%charge\_CPU * CPU) * (\%charge\_RAM * RAM)''
+\\
+Le plus dur reste \'a faire, soit r\'ecup\'erer les donn\'ees composantes de 
+l'\'equation. Cela varie en fonction des syst\`emes, donc nous avons d\'ecid\'e
+de ne faire que sous Unix pour l'instant, les valeurs de CPU et de RAM se 
+trouvent dans les fichiers ``/proc/cpuinfo'' et ``/proc/meminfo''.
+
+Pour extraire les informations j'ai utilis\'e la methode avec
+un fscanf en utilisant les 
+options d'ignorances ``\%*s'' me permettant d'arriver \'a la valeur voulue
+qui est
+toujours au m\^eme endroit. Pour le pourcentage de la charge de la RAM, elle 
+est \'ecrite dans un fichier, donc m\^eme m\'ethode que juste au dessus.
+
+ La partie d\'elicate est le calcul de la charge du cpu, il faut utiliser un 
+fichier ``/proc/stat/'' qui donne des statistiques sur le nombre de Tick en 
+comparant avec un petit intervalle pour pas trop ralentir le processus de 
+Broadcast. Soit on r\'ecupere les donn\'ees n\'ecessaire plusieurs avec la
+ m\^eme m\'ethode qu'au dessus encore puis on renvoie en faisant une moyenne.
+\\
+
+
+\subsubsection{Protocole et extraction des messages}
+
+Pour que les messages envoy\'es soient compr\'ehensibles, il est necessaire de 
+poss\'eder un protocole.
+Il \`a \'et\'e d\'efini de la mani\'ere suivante :
+
+un ``\#'' pour annoncer le debut du message, un chiffre repr\'esentant
+la classe
+du message (message syst\^eme, message relatif \`a un patch ...), un ``\#'' 
+s\'eparateur, un autre chiffre servant \`a d\'efinir le type de message
+transmi
+(par exemple : \#1\#1\# repr\'esente le paquet de broadcast), un ``\#'' et
+pour finir la cha\^ine du type d\'efini par les chiffres pr\'ecedents.
+Il para\^it d\`es lors n\'ecessaire de poss\'eder une fonction pour
+extraire les 
+param\`etres. On a donc cr\'ee la fonction {\tt n\_ieme} :
+
+Fonction simple mais tr\`es importante dans le traitement des paquets 
+re\c{c}us. Elle permet de retourner une cha\^ine entre deux occurences \# d'une
+chaine d'un paquet ce qui a pour avantage de traiter facilement  les 
+donn\'ees ou message re\c{c}u. Une double boucle l'une \`a la 
+suite de l'autre permet de rep\'erer les \# et de construire la cha\^ine 
+r\'esultante.
+\\
+
+\subsubsection{Fonction de Broadcast}
+Le fonctionnement global de cette fonction est d'envoyer un paquet sur le 
+broadcast, de recevoir des r\'eponses en UDP de la part des serveurs 
+re\c cevant le paquet de broadcast et d'ajouter ces serveurs \'a la liste des 
+serveurs. De leurs c\^ot\'e les serveurs poss\`edent de m\^eme une liste de 
+clients. \\
+
+C'est une liste cha\^in\'ee, elle  a \'et\'e implement\'e pour permettre de 
+classer les diff\`erents serveurs ou clients(en fonction du poste o\`u l'on se 
+trouve). Elle est \`a peu de chose pr\`es \'equivalente sur l'un et l'autre. 
+Elle contient cot\'e client: \\
+
+\begin{itemize} 
+\item l'adresse ip d'un serveur 
+\item le score 
+du serveur 
+\item le descripteur du socket 
+\item un bool\'een pour savoir si la connection tcp est activ\'e ou pas 
+\item un pointeur vers l'\'el\'ement suivant 
+\end{itemize} 
+\rule{0cm}{0cm} \\
+
+Du c\^ot\'e serveur, on a l'\'equivalent sans le score.
+ 
+Pour g\'erer cette liste plusieurs fonctions sont pr\'esentes pour ajouter, 
+supprimer, trier, v\'erifier si un \'el\'ement est pr\'esent, afficher la 
+liste, \ldots 
+
+Toutes ces fonctions sont classiques et reprennent les algorithmes vus en 
+algorithmique sur les listes cha\^in\'ees. Seul l'ajout est peut-\^etre un peu 
+bizarre car il s'effectue en fin de liste pour optimiser sans passer par la 
+fonction de v\'erification de pr\'esence d'\'el\'ement soit autant ensuite 
+ins\'erer \`a la fin du parcours. \\
+
+\subsubsection{Connection en TCP}
+Pour une gestion ais\'e, quatres fonctions ont \'et\'e cr\'ees :
+TCPsend, closeTCPsocket, TCPreceive et TCPinit. 
+C\^ot\'e serveur, ce dernier est en listen(mode TCPinit) et attend donc une 
+connection, pour ensuite ce mettre en mode TCPreceive.
+
+C\^ot\'e client on commence par initialiser des connections vers les serveurs 
+inscrits dans la liste en \'evitant ceux qui sont d\'ej\`a connect\'es.
+Ensuite le client se met en r\'eception \`a son tour.
+
+D\`es lors les connections entre le client et tous les serveurs connect\'es 
+sont op\'erationnelles pour envoyer et recevoir des donn\'ees. \\
+
+\newpage
+
+\section{Ce qui est \`a faire pour la prochaine soutenance}
+
+La base du cluster est pr\'esentement op\'erationnelle. Il faut maintenant 
+rendre cette base utilisable pour patchwork13.
+Pour ce faire nous aurons besoin de :
+
+\begin{itemize}
+\item pouvoir envoyer tout type de donn\'ee et pas seulement des cha\^ines 
+\item faire un serveur \'etant capable d'avoir un contr\^ole total sur les 
+patchs : cr\'eation, destruction, connecter les sorties de ses patchs sur 
+d'autres patchs pouvant \'etre soit en local soit sur un autre noeud du 
+cluster, donc par le r\'eseau.
+\item g\'erer le fait que le patch demand\'e n'\'existe pas sur le server 
+selectionn\'e et donc choisir un autre server.
+\end{itemize}
+\rule{0cm}{1cm} \\
+
+
+\chapter{Site Web}
+
+Le site web est d\'ej\`a bien lanc\'e puisque chercher ``patchwork13''
+sous Google et faire ``J'ai de la chance'' envoie directement sur
+notre page d'accueil !
+
+Cela permet notemment de taper seulement ``patchwork13''
+directement dans la barre d'adresse du merveilleux Firefox pour
+arriver sur notre site. \\
+
+Le site est h\'eberg\'e par SourceForge.net [http://patchwork13.sf.net/]
+
+et dispose \'egalement d'un miroir chez lowh.net [http://patchwork.lowh.net]
+
+que nous tenons donc \`a remercier pour ce service gratuit. \\
+
+Le site permet de naviguer sur quelques pages grace \`a un menu lat\'eral
+situ\'e \`a gauche.
+
+L'ensemble des pages du site sont en fait g\'en\'er\'ees par un
+seul script PHP qui se charge de transmettre la page demand\'ee et
+d'accorder le menu en d\'esactivant le lien de la page en cours et
+en mettant le titre de cette page en haut, juste sous le logo de
+Patchwork13!. \\
+
+Le site comporte actuellement les pages suivantes :
+\begin{itemize}
+\item {\bf About}
+
+  Une page d'introduction, d\'ecrivant sommairement le projet
+  pour les gens qui ne le connaissent pas.
+  C'est la page par d\'efaut du site. \\
+
+\item {\bf News}
+
+  Une page affichant les derni\`eres informations et nouvelles
+  \'evolutions du projet. Un formulaire et un script pour
+  administrer les news est en cours d'\'elaboration. \\
+
+\item {\bf Forum}
+
+  Un lien vers les forums du projet, fournis par SourceForge. \\
+
+\item {\bf Doc}
+
+  Une page liant vers les diff\'erentes documentations du projet,
+  cela comprend le cahier des charges, ainsi que les documentations
+  de chaque package g\'en\'er\'ees gr\^ace \`a {\bf Doxygen}. \\
+
+\item {\bf Download}
+
+  Une page expliquant comment se procurer les sources.
+  
+  Pour l'instant aucun paquet n'est pr\^et et la seule mani\`ere
+  d'obtenir Patchwork13! est d'en r\'ecup\'erer les sources via CVS.
+
+  La page donne les commandes \`a taper, pour une connection
+  anonyme et pour un compte sourceforge. \\
+
+\item {\bf Authors}
+
+  La liste des gens ayant contribu\'e au projet. \\
+
+
+\end{itemize}
+
+\chapter{Conclusion}
+
+D\`es la premi\`ere soutenance, le projet est en avance sur son calendrier
+et est d\'ej\`a dot\'e d'un r\'eseau de base capable de g\'erer plusieurs 
+clients et plusieurs servers avec une interface qui se lie d\'ej\`a
+au noyau (pw13) et au cluster.
+
+Du c\^ot\'e de l'interface, cette derni\`ere propose un environnement
+assez fourni (boites de dialogue, pr\'ef\'erences \ldots) 
+permettant d'ores et d\'ej\`a un minimum d'interaction. \\
+
+Le travail que nous avons fourni jusque l\`a constitue une base solide
+pour la suite de l'avancement du projet.
+
+D'autre part on aurait pu s'attendre \`a voir quelques probl\`emes
+de coop\'eration puisque toutes les objectifs que nous nous \'etions
+fix\'es pour cette soutenance \'etaient \`a r\'ealiser \`a deux,
+or il n'en est rien. \\
+
+Le groupe a fait preuve d'une tr\`es bonne coh\'esion et les
+r\'eunions de groupe ont \'et\'e multiples et ont \`a chaque fois
+b\'en\'efici\'e du charme magique du d\'ebugage de minuit, non
+pas que nous \'etions en retard mais plutot parce que nous
+aimons vraiement cette \'etrange et f\'ebrile insomnie. \\
+
+Pauvres de nous !
+
+\end{document}

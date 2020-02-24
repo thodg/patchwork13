@@ -1,0 +1,4 @@
+AUTOMAKE_OPTIONS = gnu
+
+PW13_LIBS = mixer gl
+SUBDIRS = ${PW13_LIBS}
